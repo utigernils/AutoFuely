@@ -20,8 +20,10 @@ import androidx.car.app.model.PlaceListMapTemplate
 import androidx.car.app.model.PlaceMarker
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.example.autofuely.R
 import com.example.autofuely.data.model.SortMode
 import com.example.autofuely.data.model.StationBboxItem
 import com.example.autofuely.data.model.StationDetailResponse
@@ -161,12 +163,13 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         val selectedFuel = preferenceRepository.getFuelType()
         val currentSortMode = preferenceRepository.getSortMode()
 
-        // ActionStrip with Sort toggle action
+        // ActionStrip
         val actionStripBuilder = ActionStrip.Builder()
 
+        // Action 1: Sort Mode Toggle
         actionStripBuilder.addAction(
             Action.Builder()
-                .setTitle(if (currentSortMode == SortMode.PRICE) "CHF Günstigste" else "📍 Nächste")
+                .setTitle(if (currentSortMode == SortMode.PRICE) "Günstigste" else "Nächste")
                 .setOnClickListener {
                     val nextSortMode = if (currentSortMode == SortMode.PRICE) SortMode.DISTANCE else SortMode.PRICE
                     preferenceRepository.setSortMode(nextSortMode)
@@ -175,8 +178,22 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 .build()
         )
 
+        // Action 2: Cog Wheel Settings Button
+        val settingsIcon = CarIcon.Builder(
+            IconCompat.createWithResource(carContext, R.drawable.ic_settings)
+        ).build()
+
+        actionStripBuilder.addAction(
+            Action.Builder()
+                .setIcon(settingsIcon)
+                .setOnClickListener {
+                    screenManager.push(SettingsScreen(carContext))
+                }
+                .build()
+        )
+
         val templateBuilder = PlaceListMapTemplate.Builder()
-            .setTitle("Tankstellen (${selectedFuel.code})")
+            .setTitle("AutoFuely")
             .setHeaderAction(Action.APP_ICON)
             .setActionStrip(actionStripBuilder.build())
 
