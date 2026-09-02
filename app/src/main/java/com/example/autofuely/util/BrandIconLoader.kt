@@ -40,14 +40,14 @@ class BrandIconLoader(private val context: Context) {
             val result = imageLoader.execute(request)
             if (result is SuccessResult) {
                 val drawable = result.drawable
-                val bitmap: Bitmap = drawable.toBitmap(width = 128, height = 128)
+                val originalBitmap: Bitmap = drawable.toBitmap(width = 128, height = 128)
                 val carIcon = CarIcon.Builder(
-                    IconCompat.createWithBitmap(bitmap)
+                    IconCompat.createWithBitmap(originalBitmap)
                 ).build()
                 iconCache[brandKey] = carIcon
                 return@withContext carIcon
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Fallback on error or 404
         }
 
