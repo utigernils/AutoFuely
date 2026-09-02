@@ -161,22 +161,9 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         val selectedFuel = preferenceRepository.getFuelType()
         val currentSortMode = preferenceRepository.getSortMode()
 
-        // ActionStrip
+        // ActionStrip with Sort toggle action
         val actionStripBuilder = ActionStrip.Builder()
 
-        // Action 1: Fuel Type Selector
-        actionStripBuilder.addAction(
-            Action.Builder()
-                .setTitle(selectedFuel.code)
-                .setOnClickListener {
-                    screenManager.push(FuelTypeSelectScreen(carContext) {
-                        loadData()
-                    })
-                }
-                .build()
-        )
-
-        // Action 2: Sort Mode Toggle
         actionStripBuilder.addAction(
             Action.Builder()
                 .setTitle(if (currentSortMode == SortMode.PRICE) "CHF Günstigste" else "📍 Nächste")
@@ -189,7 +176,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         )
 
         val templateBuilder = PlaceListMapTemplate.Builder()
-            .setTitle("Tankstellen")
+            .setTitle("Tankstellen (${selectedFuel.code})")
             .setHeaderAction(Action.APP_ICON)
             .setActionStrip(actionStripBuilder.build())
 

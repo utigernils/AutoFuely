@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.autofuely.data.model.FuelType
 import com.example.autofuely.data.repository.PreferenceRepository
 import com.example.autofuely.databinding.ActivityMainBinding
 
@@ -50,8 +51,43 @@ class MainActivity : AppCompatActivity() {
             requestLocationPermissions()
         }
 
+        setupFuelTypeSpinner()
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
+    }
+
+    private fun setupFuelTypeSpinner() {
+        val fuelTypes = FuelType.entries
+        val displayOptions = fuelTypes.map { it.displayName }
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            displayOptions
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        binding.spinnerFuelType.adapter = adapter
+
+        val currentFuel = preferenceRepository.getFuelType()
+        val defaultIndex = fuelTypes.indexOf(currentFuel).coerceAtLeast(0)
+        binding.spinnerFuelType.setSelection(defaultIndex)
+
+        binding.spinnerFuelType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedFuel = fuelTypes[position]
+                if (preferenceRepository.getFuelType() != selectedFuel) {
+                    preferenceRepository.setFuelType(selectedFuel)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Kraftstoffart auf ${selectedFuel.displayName} geändert.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
     }
 
     private fun setupHideNoPriceSwitch() {
