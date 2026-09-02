@@ -98,56 +98,57 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             result.onSuccess { list ->
                 stations = list
                 errorMessage = null
-
+                // Prefetch brand icons and station details in parallel for visible stations
                 val currentSort = preferenceRepository.getSortMode()
                 val sortedList = sortStations(list, currentSort).take(6)
-
-                // Synchronously pre-fetch details and icons before concluding load
-                fetchDetailsAndIcons(sortedList)
+                loadBrandIconsAndDetails(sortedList)
             }.onFailure {
                 stations = emptyList()
                 errorMessage = "Fehler beim Laden der Tankstellen."
+                isLoading = false
+                invalidate()
             }
-
-            isLoading = false
-            invalidate()
         }
     }
 
-    private suspend fun fetchDetailsAndIcons(displayList: List<StationBboxItem>) {
-        val icons = mutableMapOf<String, CarIcon>()
-        val details = mutableMapOf<String, StationDetailResponse>()
+    private fun loadBrandIconsAndDetails(displayList: List<StationBboxItem>) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val icons = mutableMapOf<String, CarIcon>()
+            val details = mutableMapOf<String, StationDetailResponse>()
 
-        withContext(Dispatchers.IO) {
-            val iconJobs = displayList.map { station ->
-                async {
-                    val brand = station.brand
-                    if (!brand.isNullOrEmpty()) {
-                        val icon = brandIconLoader.getBrandIcon(brand)
-                        synchronized(icons) {
-                            icons[brand.lowercase()] = icon
+            withContext(Dispatchers.IO) {
+                val iconJobs = displayList.map { station ->
+                    async {
+                        val brand = station.brand
+                        if (!brand.isNullOrEmpty()) {
+                            val icon = brandIconLoader.getBrandIcon(brand)
+                            synchronized(icons) {
+                                icons[brand.lowercase()] = icon
+                            }
                         }
                     }
                 }
-            }
 
-            val detailJobs = displayList.map { station ->
-                async {
-                    val res = repository.fetchStationById(station.id)
-                    res.getOrNull()?.let { detail ->
-                        synchronized(details) {
-                            details[station.id] = detail
+                val detailJobs = displayList.map { station ->
+                    async {
+                        val res = repository.fetchStationById(station.id)
+                        res.getOrNull()?.let { detail ->
+                            synchronized(details) {
+                                details[station.id] = detail
+                            }
                         }
                     }
                 }
+
+                iconJobs.awaitAll()
+                detailJobs.awaitAll()
             }
 
-            iconJobs.awaitAll()
-            detailJobs.awaitAll()
+            brandIconsMap = icons
+            stationDetailsMap = details
+            isLoading = false
+            invalidate()
         }
-
-        brandIconsMap = icons
-        stationDetailsMap = details
     }
 
     override fun onGetTemplate(): Template {
@@ -209,7 +210,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     station.longitude
                 )
 
-                val name = station.displayName ?: station.brand ?: "Namenlose Tankstelle"
+                val name = station.displayName ?: station.brand ?: "Tankstelle"
                 val priceFormatted = if (station.price != null && station.price > 0) {
                     "CHF ${String.format(Locale.GERMANY, "%.2f", station.price)}"
                 } else {
@@ -247,21 +248,26 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 val timestampMs = fuelInfo?.fiability?.lastPriceUpdate?.toEpochMillis()
                     ?: fuelInfo?.lastCachedPriceRefresh?.toEpochMillis()
 
+                val fiabilityLevel = fuelInfo?.fiability?.level?.uppercase()
+                    ?: station.fiability?.uppercase()
+
                 val (line2Text, color) = if (timestampMs != null) {
                     val diffMs = System.currentTimeMillis() - timestampMs
                     val hours = diffMs / (1000 * 60 * 60)
                     val relativeStr = formatRelativeTime(timestampMs)
                     val c = when {
-                        hours < 2 -> CarColor.GREEN
-                        hours < 24 -> CarColor.YELLOW
+                        hours < 24 -> CarColor.GREEN
+                        hours < 48 -> CarColor.YELLOW
                         else -> CarColor.RED
                     }
                     Pair(relativeStr, c)
                 } else {
-                    val isOld = station.fiability?.uppercase() == "OLD_LAST_UPDATE"
-                    val c = if (isOld) CarColor.YELLOW else CarColor.GREEN
-                    val text = if (isOld) "vor längerer Zeit" else "vor kurzem"
-                    Pair(text, c)
+                    when (fiabilityLevel) {
+                        "CONFIDENT", "FEW_RECENT_PRICES" -> Pair("vor kurzem", CarColor.GREEN)
+                        "OLD_LAST_UPDATE" -> Pair("vor längerer Zeit", CarColor.YELLOW)
+                        "OUTDATED_LAST_PRICE_UPDATE" -> Pair("vor längerer Zeit", CarColor.RED)
+                        else -> Pair("vor kurzem", CarColor.GREEN)
+                    }
                 }
 
                 val line2Spannable = SpannableString(line2Text).apply {
