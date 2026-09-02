@@ -28,7 +28,12 @@ class FuelRepository(
             )
             val response = apiService.getStationsByBbox(request)
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!)
+                val filteredStations = response.body()!!.filter { item ->
+                    val id = item.id
+                    // Filter out numeric bugged station IDs (e.g. 846), keeping valid string IDs (e.g. "oSUqLcS39YfZMOJIx5J3")
+                    id.isNotBlank() && id.toLongOrNull() == null
+                }
+                Result.success(filteredStations)
             } else {
                 Result.failure(Exception("API Error: ${response.code()} ${response.message()}"))
             }

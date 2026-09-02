@@ -282,14 +282,10 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 val brandKey = station.brand?.trim()?.lowercase() ?: ""
                 val icon = brandIconsMap[brandKey] ?: brandIconLoader.fallbackIcon
 
-                // Place marker for map: Use TYPE_IMAGE so Android Auto renders full-color brand logos
+                // Place marker for map: TYPE_IMAGE cannot be combined with setColor()
                 val carLocation = CarLocation.create(station.latitude, station.longitude)
                 val markerBuilder = PlaceMarker.Builder()
                     .setIcon(icon, PlaceMarker.TYPE_IMAGE)
-
-                if (station.isCheapest == true) {
-                    markerBuilder.setColor(CarColor.GREEN)
-                }
 
                 val place = Place.Builder(carLocation)
                     .setMarker(markerBuilder.build())
