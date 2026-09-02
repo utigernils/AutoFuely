@@ -90,7 +90,8 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
         CoroutineScope(Dispatchers.Main).launch {
             currentLocation = locationHelper.getLastKnownLocation()
-            val bbox = locationHelper.calculateBbox(currentLocation)
+            val bboxSizeKm = preferenceRepository.getBboxSizeKm().toDouble()
+            val bbox = locationHelper.calculateBbox(currentLocation, bboxSizeKm)
             val selectedFuel = preferenceRepository.getFuelType()
 
             val result = repository.fetchStationsByBbox(bbox, selectedFuel.code)
@@ -282,7 +283,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 val brandKey = station.brand?.trim()?.lowercase() ?: ""
                 val icon = brandIconsMap[brandKey] ?: brandIconLoader.fallbackIcon
 
-                // Place marker for map: TYPE_IMAGE cannot be combined with setColor()
+                // Place marker for map: Use TYPE_IMAGE so Android Auto renders full-color brand logos
                 val carLocation = CarLocation.create(station.latitude, station.longitude)
                 val markerBuilder = PlaceMarker.Builder()
                     .setIcon(icon, PlaceMarker.TYPE_IMAGE)

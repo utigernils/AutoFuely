@@ -12,6 +12,7 @@ class PreferenceRepository(context: Context) {
     companion object {
         private const val KEY_FUEL_TYPE = "key_fuel_type"
         private const val KEY_SORT_MODE = "key_sort_mode"
+        private const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
     }
 
     fun getFuelType(): FuelType {
@@ -27,12 +28,20 @@ class PreferenceRepository(context: Context) {
         val name = prefs.getString(KEY_SORT_MODE, SortMode.PRICE.name) ?: SortMode.PRICE.name
         return try {
             SortMode.valueOf(name)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             SortMode.PRICE
         }
     }
 
     fun setSortMode(sortMode: SortMode) {
         prefs.edit().putString(KEY_SORT_MODE, sortMode.name).apply()
+    }
+
+    fun getBboxSizeKm(): Int {
+        return prefs.getInt(KEY_BBOX_SIZE_KM, 15)
+    }
+
+    fun setBboxSizeKm(sizeKm: Int) {
+        prefs.edit().putInt(KEY_BBOX_SIZE_KM, sizeKm).apply()
     }
 }

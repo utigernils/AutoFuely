@@ -2,17 +2,24 @@ package com.example.autofuely
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.example.autofuely.data.repository.PreferenceRepository
 import com.example.autofuely.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var preferenceRepository: PreferenceRepository
+
+    private val bboxSizeOptions = listOf(3, 5, 8, 10, 15, 20)
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -34,11 +41,48 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        preferenceRepository = PreferenceRepository(this)
+
         val hasPermission = checkLocationPermission()
         updatePermissionUi(hasPermission)
 
         binding.btnGrantLocation.setOnClickListener {
             requestLocationPermissions()
+        }
+
+        setupBboxSizeSpinner()
+    }
+
+    private fun setupBboxSizeSpinner() {
+        val displayOptions = bboxSizeOptions.map { "$it km" }
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            displayOptions
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+
+        binding.spinnerBboxSize.adapter = adapter
+
+        val currentSize = preferenceRepository.getBboxSizeKm()
+        val defaultIndex = bboxSizeOptions.indexOf(currentSize).let { if (it >= 0) it else 4 } // default 15km
+        binding.spinnerBboxSize.setSelection(defaultIndex)
+
+        binding.spinnerBboxSize.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedSize = bboxSizeOptions[position]
+                if (preferenceRepository.getBboxSizeKm() != selectedSize) {
+                    preferenceRepository.setBboxSizeKm(selectedSize)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Suchbereich auf $selectedSize km aktualisiert.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -64,10 +108,14 @@ class MainActivity : AppCompatActivity() {
     private fun updatePermissionUi(hasPermission: Boolean) {
         if (hasPermission) {
             binding.btnGrantLocation.visibility = View.GONE
+            binding.tvLocationStatus.text = getString(R.string.permission_granted)
+            binding.tvLocationStatus.setTextColor(Color.parseColor("#66BB6A"))
             binding.tvLocationStatus.visibility = View.VISIBLE
         } else {
             binding.btnGrantLocation.visibility = View.VISIBLE
-            binding.tvLocationStatus.visibility = View.GONE
+            binding.tvLocationStatus.text = getString(R.string.location_permission_needed)
+            binding.tvLocationStatus.setTextColor(Color.parseColor("#FFA726"))
+            binding.tvLocationStatus.visibility = View.VISIBLE
         }
     }
 }

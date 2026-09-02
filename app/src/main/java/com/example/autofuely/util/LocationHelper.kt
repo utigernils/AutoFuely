@@ -34,18 +34,24 @@ class LocationHelper(context: Context) {
                         continuation.resume(defaultLocation)
                     }
                 }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             if (continuation.isActive) {
                 continuation.resume(defaultLocation)
             }
         }
     }
 
-    fun calculateBbox(location: Location, deltaLat: Double = 0.2, deltaLng: Double = 0.3): List<Double> {
+    fun calculateBbox(location: Location, edgeLengthKm: Double = 15.0): List<Double> {
+        val halfKm = edgeLengthKm / 2.0
+        val deltaLat = halfKm / 111.0
+        val cosLat = cos(Math.toRadians(location.latitude)).coerceAtLeast(0.1)
+        val deltaLng = halfKm / (111.0 * cosLat)
+
         val minLng = location.longitude - deltaLng
         val minLat = location.latitude - deltaLat
         val maxLng = location.longitude + deltaLng
         val maxLat = location.latitude + deltaLat
+
         return listOf(minLng, minLat, maxLng, maxLat)
     }
 
