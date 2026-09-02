@@ -188,9 +188,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     "Preis k.A."
                 }
 
-                val line1 = "$priceFormatted  •  ${station.getReliabilityLabel()}"
-
-                // DistanceSpan is required for every row in PlaceListMapTemplate
+                // Line 1: Price and Distance (with DistanceSpan)
                 val distanceObj = if (distKm < 1.0) {
                     Distance.create((distKm * 1000).toInt().coerceAtLeast(1).toDouble(), Distance.UNIT_METERS)
                 } else {
@@ -198,13 +196,15 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 }
                 val distanceSpan = DistanceSpan.create(distanceObj)
 
-                val addressStr = station.formattedAddress ?: "Adresse k.A."
                 val distancePlaceholder = "0 km"
-                val line2Spannable = SpannableString("$addressStr  •  $distancePlaceholder").apply {
+                val line1Spannable = SpannableString("$priceFormatted  •  $distancePlaceholder").apply {
                     val start = length - distancePlaceholder.length
                     val end = length
                     setSpan(distanceSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
                 }
+
+                // Line 2: Reliability Label
+                val line2 = station.getReliabilityLabel()
 
                 val brandKey = station.brand?.trim()?.lowercase() ?: ""
                 val icon = brandIconsMap[brandKey] ?: brandIconLoader.fallbackIcon
@@ -224,8 +224,8 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
                 val row = Row.Builder()
                     .setTitle(name)
-                    .addText(line1)
-                    .addText(line2Spannable)
+                    .addText(line1Spannable)
+                    .addText(line2)
                     .setMetadata(Metadata.Builder().setPlace(place).build())
                     .setOnClickListener {
                         screenManager.push(StationDetailScreen(carContext, station.id))
