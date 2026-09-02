@@ -19,7 +19,9 @@ import java.util.Locale
 
 class StationDetailScreen(
     carContext: CarContext,
-    private val stationId: String
+    private val stationId: String,
+    private val fallbackLat: Double? = null,
+    private val fallbackLng: Double? = null
 ) : Screen(carContext) {
 
     private val repository = FuelRepository()
@@ -49,7 +51,7 @@ class StationDetailScreen(
 
     override fun onGetTemplate(): Template {
         val header = Header.Builder()
-            .setTitle("Tankstellen Details")
+            .setTitle("Tankstelle")
             .setStartHeaderAction(Action.BACK)
             .build()
 
@@ -63,20 +65,8 @@ class StationDetailScreen(
         }
 
         val details = detailResponse
-        if (details == null) {
-            paneBuilder.addRow(
-                Row.Builder()
-                    .setTitle("Fehler")
-                    .addText(errorMessage ?: "Keine Daten gefunden")
-                    .build()
-            )
-            return PaneTemplate.Builder(paneBuilder.build())
-                .setHeader(header)
-                .build()
-        }
-
-        val name = details.displayName ?: details.brand ?: "Tankstelle"
-        val address = details.formattedAddress ?: "Keine Adresse vorhanden"
+        val name = details?.displayName ?: details?.brand ?: "Tankstelle"
+        val address = details?.formattedAddress ?: "Keine Adresse vorhanden"
 
         paneBuilder.addRow(
             Row.Builder()
@@ -86,7 +76,7 @@ class StationDetailScreen(
         )
 
         // Prices section
-        val fuels = details.fuelCollection
+        val fuels = details?.fuelCollection
         val priceText = if (!fuels.isNullOrEmpty()) {
             val sb = StringBuilder()
             fuels.forEach { (fuelCode, info) ->
@@ -108,7 +98,7 @@ class StationDetailScreen(
         )
 
         // TCS Mastercard Cashback
-        val cashbackText = if (details.hasTCSMastercardCashback == true) {
+        val cashbackText = if (details?.hasTCSMastercardCashback == true) {
             "Ja - Rabatt mit TCS Mastercard verfügbar"
         } else {
             "Nein"
@@ -121,13 +111,13 @@ class StationDetailScreen(
         )
 
         // Navigation Action Button
-        val lat = details.location?.lat
-        val lng = details.location?.lng
-        if (lat != null && lng != null) {
+        val navLat = details?.location?.lat ?: fallbackLat
+        val navLng = details?.location?.lng ?: fallbackLng
+        if (navLat != null && navLng != null) {
             val navAction = Action.Builder()
                 .setTitle("Navigation starten")
                 .setOnClickListener {
-                    launchNavigation(lat, lng, name)
+                    launchNavigation(navLat, navLng)
                 }
                 .build()
             paneBuilder.addAction(navAction)
@@ -138,18 +128,33 @@ class StationDetailScreen(
             .build()
     }
 
-    private fun launchNavigation(lat: Double, lng: Double, name: String) {
-        val uri = Uri.parse("geo:$lat,$lng?q=$lat,$lng(${Uri.encode(name)})")
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        try {
-            carContext.startCarApp(intent)
-        } catch (e: Exception) {
+    private fun launchNavigation(lat: Double, lng: Double) {
+        val geoUri = Uri.parse("geo:$lat,$lng?q=$lat,$lng")
+        val googleNavUri = Uri.parse("google.navigation:q=$lat,$lng")
+
+        val intentsToTry = listOf(
+            Intent(Intent.ACTION_VIEW, geoUri),
+            Intent("androidx.car.app.action.NAVIGATE", geoUri),
+            Intent(Intent.ACTION_VIEW, googleNavUri)
+        )
+
+        for (intent in intentsToTry) {
             try {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                carContext.startActivity(intent)
-            } catch (ex: Exception) {
-                // Ignore
+                carContext.startCarApp(intent)
+                return
+            } catch (_: Exception) {
+                // Try next intent
             }
+        }
+
+        // Fallback to startActivity
+        try {
+            val fallbackIntent = Intent(Intent.ACTION_VIEW, geoUri).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            carContext.startActivity(fallbackIntent)
+        } catch (_: Exception) {
+            // Ignore
         }
     }
 }

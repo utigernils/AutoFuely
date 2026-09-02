@@ -166,7 +166,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
         actionStripBuilder.addAction(
             Action.Builder()
-                .setTitle(if (currentSortMode == SortMode.PRICE) "Günstigste" else "Nächste")
+                .setTitle(if (currentSortMode == SortMode.PRICE) "CHF Günstigste" else "📍 Nächste")
                 .setOnClickListener {
                     val nextSortMode = if (currentSortMode == SortMode.PRICE) SortMode.DISTANCE else SortMode.PRICE
                     preferenceRepository.setSortMode(nextSortMode)
@@ -290,7 +290,14 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     .addText(line2Spannable)
                     .setMetadata(Metadata.Builder().setPlace(place).build())
                     .setOnClickListener {
-                        screenManager.push(StationDetailScreen(carContext, station.id))
+                        screenManager.push(
+                            StationDetailScreen(
+                                carContext = carContext,
+                                stationId = station.id,
+                                fallbackLat = station.latitude,
+                                fallbackLng = station.longitude
+                            )
+                        )
                     }
                     .build()
 
