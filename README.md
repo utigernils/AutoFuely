@@ -4,6 +4,9 @@
 
 Powered by official TCS Benzinpreis API data, **AutoFuely** seamlessly integrates into your car's display via the official `androidx.car.app` library, allowing drivers to quickly compare fuel prices, view data freshness, and launch turn-by-turn navigation directly from the vehicle head unit.
 
+> [!NOTE]  
+> Fuely is currently only available in German.
+
 ---
 
 ## Screenshots
@@ -12,10 +15,7 @@ Here is a preview of the app in action on both Android Auto and the Smartphone c
 
 | Android Auto UI (Car Display) | Smartphone Companion App |
 | :---: | :---: |
-| ![Android Auto UI Screenshot](HERE) | ![Phone UI Screenshot](HERE) |
-
-> [!NOTE]  
-> Replace `HERE` in the Markdown image tags above with the paths or URLs to your screenshots (`![Android Auto UI](path/to/car_ui.png)`).
+| <img width="800" height="480" alt="Screenshot 2026-09-02 193856" src="https://github.com/user-attachments/assets/0531e8f0-3400-4ac1-a7bd-ab3e0e1b4e59" />| <img width="569" height="1271" alt="image" src="https://github.com/user-attachments/assets/4e8a1972-05d7-4c0c-bb1a-e56452681b34" />|
 
 ---
 
