@@ -14,13 +14,4 @@ data class StationBboxItem(
     @SerializedName("fuel") val fuel: String?,
     @SerializedName("fiability") val fiability: String?,
     @SerializedName("cluster") val cluster: Boolean?
-) {
-    fun getReliabilityLabel(): String {
-        return when (fiability?.uppercase()) {
-            "CONFIDENT" -> "Zuverlässig"
-            "OLD_LAST_UPDATE" -> "Älteres Update"
-            "UNRELIABLE" -> "Unbestätigt"
-            else -> fiability ?: "K.A."
-        }
-    }
-}
+)

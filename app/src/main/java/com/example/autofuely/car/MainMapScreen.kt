@@ -12,6 +12,7 @@ import androidx.car.app.model.CarIcon
 import androidx.car.app.model.CarLocation
 import androidx.car.app.model.Distance
 import androidx.car.app.model.DistanceSpan
+import androidx.car.app.model.ForegroundCarColorSpan
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.Metadata
 import androidx.car.app.model.Place
@@ -23,6 +24,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.autofuely.data.model.SortMode
 import com.example.autofuely.data.model.StationBboxItem
+import com.example.autofuely.data.model.StationDetailResponse
 import com.example.autofuely.data.repository.FuelRepository
 import com.example.autofuely.data.repository.PreferenceRepository
 import com.example.autofuely.util.BrandIconLoader
@@ -30,6 +32,8 @@ import com.example.autofuely.util.LocationHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -46,6 +50,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
     private var currentLocation: Location = locationHelper.defaultLocation
     private var stations: List<StationBboxItem> = emptyList()
     private var brandIconsMap: Map<String, CarIcon> = emptyMap()
+    private var stationDetailsMap: Map<String, StationDetailResponse> = emptyMap()
 
     private var isLoading = true
     private var errorMessage: String? = null
@@ -93,7 +98,12 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             result.onSuccess { list ->
                 stations = list
                 errorMessage = null
-                loadBrandIcons(list)
+
+                val currentSort = preferenceRepository.getSortMode()
+                val sortedList = sortStations(list, currentSort).take(6)
+
+                // Synchronously pre-fetch details and icons before concluding load
+                fetchDetailsAndIcons(sortedList)
             }.onFailure {
                 stations = emptyList()
                 errorMessage = "Fehler beim Laden der Tankstellen."
@@ -104,21 +114,40 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         }
     }
 
-    private fun loadBrandIcons(list: List<StationBboxItem>) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val icons = mutableMapOf<String, CarIcon>()
-            withContext(Dispatchers.IO) {
-                list.forEach { station ->
+    private suspend fun fetchDetailsAndIcons(displayList: List<StationBboxItem>) {
+        val icons = mutableMapOf<String, CarIcon>()
+        val details = mutableMapOf<String, StationDetailResponse>()
+
+        withContext(Dispatchers.IO) {
+            val iconJobs = displayList.map { station ->
+                async {
                     val brand = station.brand
-                    if (!brand.isNullOrEmpty() && !icons.containsKey(brand.lowercase())) {
+                    if (!brand.isNullOrEmpty()) {
                         val icon = brandIconLoader.getBrandIcon(brand)
-                        icons[brand.lowercase()] = icon
+                        synchronized(icons) {
+                            icons[brand.lowercase()] = icon
+                        }
                     }
                 }
             }
-            brandIconsMap = icons
-            invalidate()
+
+            val detailJobs = displayList.map { station ->
+                async {
+                    val res = repository.fetchStationById(station.id)
+                    res.getOrNull()?.let { detail ->
+                        synchronized(details) {
+                            details[station.id] = detail
+                        }
+                    }
+                }
+            }
+
+            iconJobs.awaitAll()
+            detailJobs.awaitAll()
         }
+
+        brandIconsMap = icons
+        stationDetailsMap = details
     }
 
     override fun onGetTemplate(): Template {
@@ -147,7 +176,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 .setOnClickListener {
                     val nextSortMode = if (currentSortMode == SortMode.PRICE) SortMode.DISTANCE else SortMode.PRICE
                     preferenceRepository.setSortMode(nextSortMode)
-                    invalidate()
+                    loadData()
                 }
                 .build()
         )
@@ -170,7 +199,6 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 errorMessage ?: "Keine Tankstellen in diesem Bereich gefunden."
             )
         } else {
-            // Max 6 items recommended for Car App POI lists
             val displayList = sortedStations.take(6)
 
             displayList.forEach { station ->
@@ -181,14 +209,14 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     station.longitude
                 )
 
-                val name = station.displayName ?: station.brand ?: "Tankstelle"
+                val name = station.displayName ?: station.brand ?: "Namenlose Tankstelle"
                 val priceFormatted = if (station.price != null && station.price > 0) {
                     "CHF ${String.format(Locale.GERMANY, "%.2f", station.price)}"
                 } else {
                     "Preis k.A."
                 }
 
-                // Line 1: Price and Distance (with DistanceSpan)
+                // Line 1: Price + Distance (with DistanceSpan & Green highlight for cheapest)
                 val distanceObj = if (distKm < 1.0) {
                     Distance.create((distKm * 1000).toInt().coerceAtLeast(1).toDouble(), Distance.UNIT_METERS)
                 } else {
@@ -201,15 +229,54 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     val start = length - distancePlaceholder.length
                     val end = length
                     setSpan(distanceSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+
+                    if (station.isCheapest == true) {
+                        setSpan(
+                            ForegroundCarColorSpan.create(CarColor.GREEN),
+                            0,
+                            priceFormatted.length,
+                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                        )
+                    }
                 }
 
-                // Line 2: Reliability Label
-                val line2 = station.getReliabilityLabel()
+                // Line 2: Relative timestamp + Color coding
+                val detail = stationDetailsMap[station.id]
+                val fuelInfo = detail?.fuelCollection?.get(selectedFuel.code)
+
+                val timestampMs = fuelInfo?.fiability?.lastPriceUpdate?.toEpochMillis()
+                    ?: fuelInfo?.lastCachedPriceRefresh?.toEpochMillis()
+
+                val (line2Text, color) = if (timestampMs != null) {
+                    val diffMs = System.currentTimeMillis() - timestampMs
+                    val hours = diffMs / (1000 * 60 * 60)
+                    val relativeStr = formatRelativeTime(timestampMs)
+                    val c = when {
+                        hours < 2 -> CarColor.GREEN
+                        hours < 24 -> CarColor.YELLOW
+                        else -> CarColor.RED
+                    }
+                    Pair(relativeStr, c)
+                } else {
+                    val isOld = station.fiability?.uppercase() == "OLD_LAST_UPDATE"
+                    val c = if (isOld) CarColor.YELLOW else CarColor.GREEN
+                    val text = if (isOld) "vor längerer Zeit" else "vor kurzem"
+                    Pair(text, c)
+                }
+
+                val line2Spannable = SpannableString(line2Text).apply {
+                    setSpan(
+                        ForegroundCarColorSpan.create(color),
+                        0,
+                        length,
+                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                    )
+                }
 
                 val brandKey = station.brand?.trim()?.lowercase() ?: ""
                 val icon = brandIconsMap[brandKey] ?: brandIconLoader.fallbackIcon
 
-                // Place marker for map: Set icon on PlaceMarker instead of Row.setImage()
+                // Place marker for map
                 val carLocation = CarLocation.create(station.latitude, station.longitude)
                 val markerBuilder = PlaceMarker.Builder()
                     .setIcon(icon, PlaceMarker.TYPE_ICON)
@@ -225,7 +292,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 val row = Row.Builder()
                     .setTitle(name)
                     .addText(line1Spannable)
-                    .addText(line2)
+                    .addText(line2Spannable)
                     .setMetadata(Metadata.Builder().setPlace(place).build())
                     .setOnClickListener {
                         screenManager.push(StationDetailScreen(carContext, station.id))
@@ -238,6 +305,25 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
         templateBuilder.setItemList(itemListBuilder.build())
         return templateBuilder.build()
+    }
+
+    private fun formatRelativeTime(timestampMs: Long): String {
+        val now = System.currentTimeMillis()
+        val diffMs = now - timestampMs
+        if (diffMs < 0) return "vor wenigen Minuten"
+
+        val minutes = diffMs / (1000 * 60)
+        val hours = minutes / 60
+        val days = hours / 24
+
+        return when {
+            minutes < 1 -> "vor wenigen Sekunden"
+            minutes < 60 -> "vor $minutes Min."
+            hours == 1L -> "vor 1 Std."
+            hours < 24 -> "vor $hours Std."
+            days == 1L -> "vor 1 Tag"
+            else -> "vor $days Tagen"
+        }
     }
 
     private fun sortStations(list: List<StationBboxItem>, mode: SortMode): List<StationBboxItem> {
