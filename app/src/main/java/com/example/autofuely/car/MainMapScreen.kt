@@ -166,7 +166,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
         actionStripBuilder.addAction(
             Action.Builder()
-                .setTitle(if (currentSortMode == SortMode.PRICE) "CHF Günstigste" else "📍 Nächste")
+                .setTitle(if (currentSortMode == SortMode.PRICE) "Günstigste" else "Nächste")
                 .setOnClickListener {
                     val nextSortMode = if (currentSortMode == SortMode.PRICE) SortMode.DISTANCE else SortMode.PRICE
                     preferenceRepository.setSortMode(nextSortMode)
