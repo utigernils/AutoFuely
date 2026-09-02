@@ -17,7 +17,7 @@ class FuelRepository(
     suspend fun fetchStationsByBbox(
         bbox: List<Double>,
         fuelCode: String,
-        zoom: Int = 11
+        zoom: Int = 20
     ): Result<List<StationBboxItem>> = withContext(Dispatchers.IO) {
         try {
             val request = BboxRequest(
