@@ -93,8 +93,13 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             val bboxSizeKm = preferenceRepository.getBboxSizeKm().toDouble()
             val bbox = locationHelper.calculateBbox(currentLocation, bboxSizeKm)
             val selectedFuel = preferenceRepository.getFuelType()
+            val hideNoPrice = preferenceRepository.getHideNoPriceStations()
 
-            val result = repository.fetchStationsByBbox(bbox, selectedFuel.code)
+            val result = repository.fetchStationsByBbox(
+                bbox = bbox,
+                fuelCode = selectedFuel.code,
+                hideNoPrice = hideNoPrice
+            )
 
             result.onSuccess { list ->
                 stations = list

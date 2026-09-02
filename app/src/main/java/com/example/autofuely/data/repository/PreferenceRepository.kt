@@ -13,6 +13,7 @@ class PreferenceRepository(context: Context) {
         private const val KEY_FUEL_TYPE = "key_fuel_type"
         private const val KEY_SORT_MODE = "key_sort_mode"
         private const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
+        private const val KEY_HIDE_NO_PRICE_STATIONS = "key_hide_no_price_stations"
     }
 
     fun getFuelType(): FuelType {
@@ -43,5 +44,13 @@ class PreferenceRepository(context: Context) {
 
     fun setBboxSizeKm(sizeKm: Int) {
         prefs.edit().putInt(KEY_BBOX_SIZE_KM, sizeKm).apply()
+    }
+
+    fun getHideNoPriceStations(): Boolean {
+        return prefs.getBoolean(KEY_HIDE_NO_PRICE_STATIONS, true)
+    }
+
+    fun setHideNoPriceStations(hide: Boolean) {
+        prefs.edit().putBoolean(KEY_HIDE_NO_PRICE_STATIONS, hide).apply()
     }
 }

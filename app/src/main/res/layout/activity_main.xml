@@ -133,6 +133,31 @@
                     android:background="#2C2C2C"
                     android:layout_marginBottom="20dp" />
 
+                <!-- Filter Toggle for Stations without Price -->
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchHideNoPrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nur Tankstellen mit Preis anzeigen"
+                    android:textColor="#E0E0E0"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Filtert Tankstellen ohne gültige Preisangabe aus."
+                    android:textColor="#808080"
+                    android:textSize="12sp"
+                    android:layout_marginBottom="20dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#2C2C2C"
+                    android:layout_marginBottom="20dp" />
+
                 <!-- Location Permission -->
                 <TextView
                     android:layout_width="wrap_content"

@@ -17,7 +17,8 @@ class FuelRepository(
     suspend fun fetchStationsByBbox(
         bbox: List<Double>,
         fuelCode: String,
-        zoom: Int = 20
+        zoom: Int = 20,
+        hideNoPrice: Boolean = true
     ): Result<List<StationBboxItem>> = withContext(Dispatchers.IO) {
         try {
             val request = BboxRequest(
@@ -30,8 +31,9 @@ class FuelRepository(
             if (response.isSuccessful && response.body() != null) {
                 val filteredStations = response.body()!!.filter { item ->
                     val id = item.id
-                    // Filter out numeric bugged station IDs (e.g. 846), keeping valid string IDs (e.g. "oSUqLcS39YfZMOJIx5J3")
-                    id.isNotBlank() && id.toLongOrNull() == null
+                    val hasValidId = id.isNotBlank() && id.toLongOrNull() == null
+                    val hasValidPrice = !hideNoPrice || (item.price != null && item.price > 0.0)
+                    hasValidId && hasValidPrice
                 }
                 Result.success(filteredStations)
             } else {

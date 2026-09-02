@@ -51,6 +51,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupBboxSizeSpinner()
+        setupHideNoPriceSwitch()
+    }
+
+    private fun setupHideNoPriceSwitch() {
+        binding.switchHideNoPrice.isChecked = preferenceRepository.getHideNoPriceStations()
+        binding.switchHideNoPrice.setOnCheckedChangeListener { _, isChecked ->
+            preferenceRepository.setHideNoPriceStations(isChecked)
+            val msg = if (isChecked) {
+                "Tankstellen ohne Preis werden ausgeblendet."
+            } else {
+                "Alle Tankstellen werden angezeigt."
+            }
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setupBboxSizeSpinner() {
