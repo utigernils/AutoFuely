@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace = "com.utigernils.autofuely"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.utigernils.autofuely"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 36
+        versionCode = 3
+        versionName = "1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

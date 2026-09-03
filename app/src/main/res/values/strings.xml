@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">AutoFuely</string>
+    <string name="github">GitHub</string>
     <string name="mobile_info_message">Diese App ist speziell für Android Auto entwickelt. Um Benzinpreise direkt auf dem Smartphone zu sehen, verwende bitte die offizielle TCS Benzinpreis App.</string>
     <string name="location_permission_needed">Standortberechtigung erforderlich</string>
     <string name="grant_permission">Berechtigung erteilen</string>
     <string name="permission_granted">Standortzugriff ist aktiv</string>
+    <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 
     <!-- Car App Strings -->
     <string name="car_app_title">TCS Benzinpreise CH</string>

@@ -1,8 +1,10 @@
 package com.utigernils.autofuely
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -49,6 +51,19 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnGrantLocation.setOnClickListener {
             requestLocationPermissions()
+        }
+
+        binding.btnGithub.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
+            startActivity(intent)
+        }
+
+        binding.tvPrivacyPolicy.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
+            )
+            startActivity(intent)
         }
 
         setupFuelTypeSpinner()
