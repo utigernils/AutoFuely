@@ -6,6 +6,7 @@
     <string name="grant_permission">Berechtigung erteilen</string>
     <string name="permission_granted">Standortzugriff ist aktiv</string>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
+    <string name="max_data_age_title">Max. Alter der Daten</string>
 
     <!-- Car App Strings -->
     <string name="car_app_title">TCS Benzinpreise CH</string>

@@ -1,6 +1,7 @@
 package com.utigernils.autofuely
 
 import android.Manifest
+import android.R
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var preferenceRepository: PreferenceRepository
 
     private val bboxSizeOptions = listOf(3, 5, 8, 10, 15, 20)
+    private val maxAgeOptions = listOf(0, 1, 2, 3, 7)
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -69,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         setupFuelTypeSpinner()
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
+        setupMaxAgeSpinner()
     }
 
     private fun setupFuelTypeSpinner() {
@@ -115,6 +118,42 @@ class MainActivity : AppCompatActivity() {
                 "Alle Tankstellen werden angezeigt."
             }
             Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setupMaxAgeSpinner() {
+        val displayOptions = maxAgeOptions.map { days ->
+            if (days == 0) "Alle anzeigen" else "Maximal $days ${if (days == 1) "Tag" else "Tage"} alt"
+        }
+        val adapter = ArrayAdapter(
+            this,
+            R.layout.simple_spinner_item,
+            displayOptions
+        ).apply {
+            setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        }
+
+        binding.spinnerMaxAge.adapter = adapter
+
+        val currentMaxAge = preferenceRepository.getMaxPriceAgeDays()
+        val defaultIndex = maxAgeOptions.indexOf(currentMaxAge).let { if (it >= 0) it else 0 }
+        binding.spinnerMaxAge.setSelection(defaultIndex)
+
+        binding.spinnerMaxAge.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedAge = maxAgeOptions[position]
+                if (preferenceRepository.getMaxPriceAgeDays() != selectedAge) {
+                    preferenceRepository.setMaxPriceAgeDays(selectedAge)
+                    val msg = if (selectedAge == 0) {
+                        "Filter für Preis-Aktualität deaktiviert."
+                    } else {
+                        "Preise älter als $selectedAge ${if (selectedAge == 1) "Tag" else "Tage"} werden ausgeblendet."
+                    }
+                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
@@ -173,12 +212,12 @@ class MainActivity : AppCompatActivity() {
     private fun updatePermissionUi(hasPermission: Boolean) {
         if (hasPermission) {
             binding.btnGrantLocation.visibility = View.GONE
-            binding.tvLocationStatus.text = getString(R.string.permission_granted)
+            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.permission_granted)
             binding.tvLocationStatus.setTextColor(Color.parseColor("#66BB6A"))
             binding.tvLocationStatus.visibility = View.VISIBLE
         } else {
             binding.btnGrantLocation.visibility = View.VISIBLE
-            binding.tvLocationStatus.text = getString(R.string.location_permission_needed)
+            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.location_permission_needed)
             binding.tvLocationStatus.setTextColor(Color.parseColor("#FFA726"))
             binding.tvLocationStatus.visibility = View.VISIBLE
         }

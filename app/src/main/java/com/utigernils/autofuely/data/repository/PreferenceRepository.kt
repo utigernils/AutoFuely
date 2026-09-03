@@ -14,6 +14,7 @@ class PreferenceRepository(context: Context) {
         private const val KEY_SORT_MODE = "key_sort_mode"
         private const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
         private const val KEY_HIDE_NO_PRICE_STATIONS = "key_hide_no_price_stations"
+        private const val KEY_MAX_PRICE_AGE_DAYS = "key_max_price_age_days"
     }
 
     fun getFuelType(): FuelType {
@@ -52,5 +53,13 @@ class PreferenceRepository(context: Context) {
 
     fun setHideNoPriceStations(hide: Boolean) {
         prefs.edit().putBoolean(KEY_HIDE_NO_PRICE_STATIONS, hide).apply()
+    }
+
+    fun getMaxPriceAgeDays(): Int {
+        return prefs.getInt(KEY_MAX_PRICE_AGE_DAYS, 0)
+    }
+
+    fun setMaxPriceAgeDays(days: Int) {
+        prefs.edit().putInt(KEY_MAX_PRICE_AGE_DAYS, days).apply()
     }
 }
