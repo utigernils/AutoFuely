@@ -96,11 +96,13 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             val bbox = locationHelper.calculateBbox(currentLocation, bboxSizeKm)
             val selectedFuel = preferenceRepository.getFuelType()
             val hideNoPrice = preferenceRepository.getHideNoPriceStations()
+            val maxAgeDays = preferenceRepository.getMaxPriceAgeDays()
 
             val result = repository.fetchStationsByBbox(
                 bbox = bbox,
                 fuelCode = selectedFuel.code,
-                hideNoPrice = hideNoPrice
+                hideNoPrice = hideNoPrice,
+                maxAgeDays = maxAgeDays
             )
 
             result.onSuccess { list ->
@@ -203,14 +205,40 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         }
 
         val sortedStations = sortStations(stations, currentSortMode)
+        val maxAgeDays = preferenceRepository.getMaxPriceAgeDays()
+        val maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000L
+        val now = System.currentTimeMillis()
+
+        val filteredStations = sortedStations.filter { station ->
+            if (maxAgeDays <= 0) return@filter true
+
+            val detail = stationDetailsMap[station.id]
+            val fuelInfo = detail?.fuelCollection?.get(selectedFuel.code)
+            val timestampMs = fuelInfo?.fiability?.lastPriceUpdate?.toEpochMillis()
+                ?: fuelInfo?.lastCachedPriceRefresh?.toEpochMillis()
+                ?: station.lastPriceUpdate?.toEpochMillis()
+                ?: station.lastCachedPriceRefresh?.toEpochMillis()
+
+            if (timestampMs != null) {
+                (now - timestampMs) <= maxAgeMs
+            } else {
+                val fiabilityLevel = fuelInfo?.fiability?.level?.uppercase()
+                    ?: station.fiability?.uppercase()
+                when (fiabilityLevel) {
+                    "OUTDATED_LAST_PRICE_UPDATE" -> false
+                    else -> true
+                }
+            }
+        }
+
         val itemListBuilder = ItemList.Builder()
 
-        if (sortedStations.isEmpty()) {
+        if (filteredStations.isEmpty()) {
             itemListBuilder.setNoItemsMessage(
                 errorMessage ?: "Keine Tankstellen in diesem Bereich gefunden."
             )
         } else {
-            val displayList = sortedStations.take(6)
+            val displayList = filteredStations.take(6)
 
             displayList.forEach { station ->
                 val distKm = locationHelper.calculateDistanceKm(
