@@ -5,6 +5,7 @@
     <string name="location_permission_needed">Standortberechtigung erforderlich</string>
     <string name="grant_permission">Berechtigung erteilen</string>
     <string name="permission_granted">Standortzugriff ist aktiv</string>
+    <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 
     <!-- Car App Strings -->
     <string name="car_app_title">TCS Benzinpreise CH</string>

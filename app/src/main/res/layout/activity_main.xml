@@ -232,5 +232,19 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Privacy Policy Link -->
+        <TextView
+            android:id="@+id/tvPrivacyPolicy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/privacy_policy"
+            android:textColor="#9E9E9E"
+            android:textSize="13sp"
+            android:background="?attr/selectableItemBackground"
+            android:padding="8dp" />
+
     </LinearLayout>
 </ScrollView>

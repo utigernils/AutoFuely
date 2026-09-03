@@ -58,6 +58,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.tvPrivacyPolicy.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
+            )
+            startActivity(intent)
+        }
+
         setupFuelTypeSpinner()
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
