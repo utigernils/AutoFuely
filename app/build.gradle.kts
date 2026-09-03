@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.autofuely"
+    namespace = "com.utigernils.autofuely"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.autofuely"
+        applicationId = "com.utigernils.autofuely"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
