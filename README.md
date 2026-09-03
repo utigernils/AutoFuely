@@ -91,6 +91,7 @@ Pre-built APK releases are available directly on GitHub.
 
 ---
 
-## License
+## License & Privacy
 
-This project is open-source under the MIT License. Data provided by TCS Benzinpreis API.
+* **License:** This project is open-source under the MIT License. Data provided by TCS Benzinpreis API.
+* **Datenschutzerklärung (Privacy Policy):** Siehe [DATENSCHUTZERKLAERUNG.md](DATENSCHUTZERKLAERUNG.md).
