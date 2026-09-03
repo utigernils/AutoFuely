@@ -18,7 +18,8 @@ class FuelRepository(
         bbox: List<Double>,
         fuelCode: String,
         zoom: Int = 20,
-        hideNoPrice: Boolean = true
+        hideNoPrice: Boolean = true,
+        maxAgeDays: Int = 0
     ): Result<List<StationBboxItem>> = withContext(Dispatchers.IO) {
         try {
             val request = BboxRequest(
@@ -29,11 +30,23 @@ class FuelRepository(
             )
             val response = apiService.getStationsByBbox(request)
             if (response.isSuccessful && response.body() != null) {
+                val now = System.currentTimeMillis()
+                val maxAgeMs = maxAgeDays * 24 * 60 * 60 * 1000L
+
                 val filteredStations = response.body()!!.filter { item ->
                     val id = item.id
                     val hasValidId = id.isNotBlank() && id.toLongOrNull() == null
                     val hasValidPrice = !hideNoPrice || (item.price != null && item.price > 0.0)
-                    hasValidId && hasValidPrice
+
+                    val timestampMs = item.lastPriceUpdate?.toEpochMillis()
+                        ?: item.lastCachedPriceRefresh?.toEpochMillis()
+                    val hasValidAge = if (maxAgeDays > 0 && timestampMs != null) {
+                        (now - timestampMs) <= maxAgeMs
+                    } else {
+                        true
+                    }
+
+                    hasValidId && hasValidPrice && hasValidAge
                 }
                 Result.success(filteredStations)
             } else {

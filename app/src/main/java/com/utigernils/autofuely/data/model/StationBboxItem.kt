@@ -13,5 +13,7 @@ data class StationBboxItem(
     @SerializedName("price") val price: Double?,
     @SerializedName("fuel") val fuel: String?,
     @SerializedName("fiability") val fiability: String?,
-    @SerializedName("cluster") val cluster: Boolean?
+    @SerializedName("cluster") val cluster: Boolean?,
+    @SerializedName("lastPriceUpdate") val lastPriceUpdate: TimestampInfo? = null,
+    @SerializedName("lastCachedPriceRefresh") val lastCachedPriceRefresh: TimestampInfo? = null
 )

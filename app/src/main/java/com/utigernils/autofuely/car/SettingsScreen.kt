@@ -56,6 +56,19 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext) {
                 .build()
         )
 
+        // 4. Max. Alter der Daten
+        val currentMaxAge = preferenceRepository.getMaxPriceAgeDays()
+        val ageText = if (currentMaxAge == 0) "Alle anzeigen" else "Maximal $currentMaxAge ${if (currentMaxAge == 1) "Tag" else "Tage"} alt"
+        listBuilder.addItem(
+            Row.Builder()
+                .setTitle("Max. Alter der Daten")
+                .addText(ageText)
+                .setOnClickListener {
+                    screenManager.push(MaxAgeSelectScreen(carContext))
+                }
+                .build()
+        )
+
         val header = Header.Builder()
             .setTitle("Einstellungen")
             .setStartHeaderAction(Action.BACK)

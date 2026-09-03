@@ -199,6 +199,32 @@
                     android:background="#2C2C2C"
                     android:layout_marginBottom="20dp" />
 
+                <!-- Max Data Age Dropdown -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/max_data_age_title"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#B0BEC5"
+                    android:layout_marginBottom="8dp" />
+
+                <Spinner
+                    android:id="@+id/spinnerMaxAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_spinner_dark"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="20dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#2C2C2C"
+                    android:layout_marginBottom="20dp" />
+
                 <!-- Location Permission -->
                 <TextView
                     android:layout_width="wrap_content"
