@@ -105,8 +105,12 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
     private fun loadData() {
         fetchJob?.cancel()
-        isLoading = true
-        invalidate()
+
+        // Only show full loading spinner if no stations are loaded yet
+        if (stations.isEmpty()) {
+            isLoading = true
+            invalidate()
+        }
 
         fetchJob = CoroutineScope(Dispatchers.Main).launch {
             currentLocation = locationHelper.getLastKnownLocation()
@@ -124,22 +128,25 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             )
 
             result.onSuccess { list ->
-                stations = list
                 errorMessage = null
                 // Prefetch brand icons and station details in parallel for visible stations
                 val currentSort = preferenceRepository.getSortMode()
                 val sortedList = sortStations(list, currentSort).take(6)
-                loadBrandIconsAndDetails(sortedList)
+                loadBrandIconsAndDetails(list, sortedList)
             }.onFailure {
-                stations = emptyList()
-                errorMessage = "Fehler beim Laden der Tankstellen."
+                if (stations.isEmpty()) {
+                    errorMessage = "Fehler beim Laden der Tankstellen."
+                }
                 isLoading = false
                 invalidate()
             }
         }
     }
 
-    private suspend fun loadBrandIconsAndDetails(displayList: List<StationBboxItem>) {
+    private suspend fun loadBrandIconsAndDetails(
+        newList: List<StationBboxItem>,
+        displayList: List<StationBboxItem>
+    ) {
         val icons = mutableMapOf<String, CarIcon>()
         val details = mutableMapOf<String, StationDetailResponse>()
 
@@ -171,10 +178,19 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             detailJobs.awaitAll()
         }
 
+        val dataChanged = stations != newList ||
+                brandIconsMap != icons ||
+                stationDetailsMap != details
+
+        stations = newList
         brandIconsMap = icons
         stationDetailsMap = details
+        val wasLoading = isLoading
         isLoading = false
-        invalidate()
+
+        if (dataChanged || wasLoading) {
+            invalidate()
+        }
     }
 
     override fun onGetTemplate(): Template {
@@ -215,7 +231,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
             .setHeaderAction(Action.APP_ICON)
             .setActionStrip(actionStripBuilder.build())
 
-        if (isLoading) {
+        if (isLoading && stations.isEmpty()) {
             templateBuilder.setLoading(true)
             return templateBuilder.build()
         }
