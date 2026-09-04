@@ -1,5 +1,8 @@
 package com.utigernils.autofuely
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.transition.TransitionManager
@@ -8,19 +11,38 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.radiobutton.MaterialRadioButton
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var preferenceRepository: PreferenceRepository
+
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+
+        if (fineGranted || coarseGranted) {
+            updatePermissionUi(true)
+            Toast.makeText(this, getString(R.string.permission_granted_toast), Toast.LENGTH_SHORT).show()
+        } else {
+            updatePermissionUi(false)
+            Toast.makeText(this, getString(R.string.permission_denied_toast), Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +88,7 @@ class SettingsActivity : AppCompatActivity() {
 
         setupAccordions()
         setupThemeSelection()
+        setupPermissionsSection()
 
         val tvFooter = findViewById<TextView>(R.id.tvFooterMadeBy)
         tvFooter.text = HtmlCompat.fromHtml(
@@ -73,6 +96,53 @@ class SettingsActivity : AppCompatActivity() {
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         tvFooter.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updatePermissionUi(checkLocationPermission())
+    }
+
+    private fun setupPermissionsSection() {
+        val btnGrant = findViewById<MaterialButton>(R.id.btnGrantLocation)
+        btnGrant?.setOnClickListener {
+            requestLocationPermissions()
+        }
+        updatePermissionUi(checkLocationPermission())
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        val fine = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        return fine || coarse
+    }
+
+    private fun requestLocationPermissions() {
+        locationPermissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+        )
+    }
+
+    private fun updatePermissionUi(hasPermission: Boolean) {
+        val tvStatus = findViewById<TextView>(R.id.tvLocationStatus) ?: return
+        val btnGrant = findViewById<MaterialButton>(R.id.btnGrantLocation) ?: return
+
+        if (hasPermission) {
+            tvStatus.text = getString(R.string.permission_granted)
+            tvStatus.setTextColor(Color.parseColor("#4CAF50"))
+            btnGrant.visibility = View.GONE
+        } else {
+            tvStatus.text = getString(R.string.location_permission_needed)
+            tvStatus.setTextColor(Color.parseColor("#E53935"))
+            btnGrant.visibility = View.VISIBLE
+        }
     }
 
     private fun setupThemeSelection() {

@@ -38,21 +38,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
-        if (fineGranted || coarseGranted) {
-            updatePermissionUi(true)
-            Toast.makeText(this, getString(R.string.permission_granted_toast), Toast.LENGTH_SHORT).show()
-        } else {
-            updatePermissionUi(false)
-            Toast.makeText(this, getString(R.string.permission_denied_toast), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -84,13 +69,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         preferenceRepository = PreferenceRepository(this)
-
-        val hasPermission = checkLocationPermission()
-        updatePermissionUi(hasPermission)
-
-        binding.btnGrantLocation.setOnClickListener {
-            requestLocationPermissions()
-        }
 
         binding.btnGithub.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
@@ -281,39 +259,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
-    private fun checkLocationPermission(): Boolean {
-        val fine = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val coarse = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        return fine || coarse
-    }
-
-    private fun requestLocationPermissions() {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
-
-    private fun updatePermissionUi(hasPermission: Boolean) {
-        if (hasPermission) {
-            binding.btnGrantLocation.visibility = View.GONE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.permission_granted)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#66BB6A"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
-        } else {
-            binding.btnGrantLocation.visibility = View.VISIBLE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.location_permission_needed)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#FFA726"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
         }
     }
 }
