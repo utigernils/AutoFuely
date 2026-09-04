@@ -5,6 +5,10 @@
     <string name="github">GitHub</string>
     <string name="action_app_settings">App-Einstellungen</string>
     <string name="title_app_settings">App-Einstellungen</string>
+    <string name="settings_accordion_appearance">Erscheinungsbild</string>
+    <string name="settings_accordion_permissions">Berechtigungen</string>
+    <string name="settings_accordion_about">Über die App</string>
+    <string name="settings_placeholder_text">Platzhalter-Inhalt</string>
     <string name="footer_made_by">Mit ❤️ gemacht von &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 

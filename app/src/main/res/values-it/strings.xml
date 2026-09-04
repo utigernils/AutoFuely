@@ -5,6 +5,10 @@
     <string name="github">GitHub</string>
     <string name="action_app_settings">Impostazioni dell\'app</string>
     <string name="title_app_settings">Impostazioni dell\'app</string>
+    <string name="settings_accordion_appearance">Aspetto</string>
+    <string name="settings_accordion_permissions">Autorizzazioni</string>
+    <string name="settings_accordion_about">Informazioni</string>
+    <string name="settings_placeholder_text">Contenuto segnaposto</string>
     <string name="footer_made_by">Fatto con ❤️ da &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Informativa sulla privacy</u></string>
 
