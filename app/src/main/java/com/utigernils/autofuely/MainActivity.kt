@@ -2,19 +2,16 @@ package com.utigernils.autofuely
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.activity.enableEdgeToEdge
 import com.utigernils.autofuely.data.model.FuelType
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 import com.utigernils.autofuely.databinding.ActivityMainBinding
@@ -72,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
 
+        setupAccordions()
         setupFuelTypeSpinner()
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
@@ -87,6 +85,57 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         preferenceRepository.unregisterOnChangeListener(prefChangeListener)
+    }
+
+    private fun setupAccordions() {
+        val contentLayout = binding.contentLayout
+
+        val headerFuelType = binding.headerFuelType
+        val contentFuelType = binding.contentFuelType
+        val arrowFuelType = binding.ivArrowFuelType
+
+        val headerBboxSize = binding.headerBboxSize
+        val contentBboxSize = binding.contentBboxSize
+        val arrowBboxSize = binding.ivArrowBboxSize
+
+        val headerHideNoPrice = binding.headerHideNoPrice
+        val contentHideNoPrice = binding.contentHideNoPrice
+        val arrowHideNoPrice = binding.ivArrowHideNoPrice
+
+        val headerMaxAge = binding.headerMaxAge
+        val contentMaxAge = binding.contentMaxAge
+        val arrowMaxAge = binding.ivArrowMaxAge
+
+        data class Accordion(val header: View, val content: View, val arrow: View)
+
+        val accordions = listOf(
+            Accordion(headerFuelType, contentFuelType, arrowFuelType),
+            Accordion(headerBboxSize, contentBboxSize, arrowBboxSize),
+            Accordion(headerHideNoPrice, contentHideNoPrice, arrowHideNoPrice),
+            Accordion(headerMaxAge, contentMaxAge, arrowMaxAge)
+        )
+
+        accordions.forEach { accordion ->
+            accordion.header.setOnClickListener {
+                TransitionManager.beginDelayedTransition(contentLayout)
+                val isCurrentlyExpanded = accordion.content.visibility == View.VISIBLE
+
+                accordions.forEach { other ->
+                    if (other == accordion) {
+                        if (isCurrentlyExpanded) {
+                            other.content.visibility = View.GONE
+                            other.arrow.animate().rotation(0f).setDuration(200).start()
+                        } else {
+                            other.content.visibility = View.VISIBLE
+                            other.arrow.animate().rotation(180f).setDuration(200).start()
+                        }
+                    } else {
+                        other.content.visibility = View.GONE
+                        other.arrow.animate().rotation(0f).setDuration(200).start()
+                    }
+                }
+            }
+        }
     }
 
     private fun updateAllSettingsUi() {

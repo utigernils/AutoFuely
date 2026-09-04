@@ -25,11 +25,15 @@
     <!-- MainActivity Phone UI -->
     <string name="mobile_info_message">Diese App ist speziell für Android Auto entwickelt. Um Benzinpreise direkt auf dem Smartphone zu sehen, verwende bitte die offizielle TCS Benzinpreis App.</string>
     <string name="settings_title">Einstellungen</string>
+    <string name="filter_settings_title">Filter-Einstellungen</string>
     <string name="fuel_type_title">Bevorzugte Kraftstoffart</string>
-    <string name="bbox_size_title">Suchbereich (Seitenlänge Bounding Box)</string>
+    <string name="fuel_type_desc">Wähle die Kraftstoffart, nach der bei Tankstellen gesucht werden soll.</string>
+    <string name="bbox_size_title">Suchbereich</string>
+    <string name="bbox_size_desc">Lege den Suchbereich um deinen Standort fest.</string>
     <string name="hide_no_price_title">Nur Tankstellen mit Preis anzeigen</string>
     <string name="hide_no_price_desc">Filtert Tankstellen ohne gültige Preisangabe aus.</string>
     <string name="max_data_age_title">Max. Alter der Daten</string>
+    <string name="max_data_age_desc">Blende Preise aus, die älter als die angegebene Anzahl von Tagen sind.</string>
 
     <!-- Permissions -->
     <string name="location_access_title">Standortzugriff</string>

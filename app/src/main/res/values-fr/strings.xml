@@ -25,11 +25,15 @@
     <!-- MainActivity Phone UI -->
     <string name="mobile_info_message">Cette application est spécialement conçue pour Android Auto. Pour consulter les prix des carburants directement sur votre smartphone, veuillez utiliser l\'application officielle Prix du carburant TCS.</string>
     <string name="settings_title">Paramètres</string>
-    <string name="fuel_type_title">Carburant préféré</string>
-    <string name="bbox_size_title">Rayon de recherche (zone de recherche)</string>
-    <string name="hide_no_price_title">Afficher uniquement les stations avec prix</string>
-    <string name="hide_no_price_desc">Masque les stations sans information de prix valide.</string>
-    <string name="max_data_age_title">Âge max. des données</string>
+    <string name="filter_settings_title">Paramètres de filtrage</string>
+    <string name="fuel_type_title">Type de carburant préféré</string>
+    <string name="fuel_type_desc">Choisissez le type de carburant à rechercher dans les stations-service.</string>
+    <string name="bbox_size_title">Rayon de recherche</string>
+    <string name="bbox_size_desc">Définissez le rayon de recherche autour de votre position.</string>
+    <string name="hide_no_price_title">Uniquement les stations avec prix</string>
+    <string name="hide_no_price_desc">Masque les stations sans prix valide.</string>
+    <string name="max_data_age_title">Âge maximal des données</string>
+    <string name="max_data_age_desc">Masquez les prix plus anciens que le nombre de jours spécifié.</string>
 
     <!-- Permissions -->
     <string name="location_access_title">Accès à la localisation</string>

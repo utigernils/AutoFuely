@@ -25,11 +25,15 @@
     <!-- MainActivity Phone UI -->
     <string name="mobile_info_message">This app is specifically designed for Android Auto. To view fuel prices directly on your smartphone, please use the official TCS Benzinpreis App.</string>
     <string name="settings_title">Settings</string>
+    <string name="filter_settings_title">Filter Settings</string>
     <string name="fuel_type_title">Preferred Fuel Type</string>
-    <string name="bbox_size_title">Search Radius (Bounding Box Size)</string>
+    <string name="fuel_type_desc">Choose which fuel type to search for across gas stations.</string>
+    <string name="bbox_size_title">Search Radius</string>
+    <string name="bbox_size_desc">Set the bounding box search radius around your location.</string>
     <string name="hide_no_price_title">Only Show Stations with Prices</string>
     <string name="hide_no_price_desc">Filters out stations without valid price information.</string>
     <string name="max_data_age_title">Max Data Age</string>
+    <string name="max_data_age_desc">Hide prices older than the specified number of days.</string>
 
     <!-- Permissions -->
     <string name="location_access_title">Location Access</string>
