@@ -136,6 +136,14 @@ class SettingsActivity : AppCompatActivity() {
             )
             startActivity(intent)
         }
+
+        val tvVersion = findViewById<TextView>(R.id.tvAppVersion)
+        val versionName = try {
+            packageManager.getPackageInfo(packageName, 0).versionName ?: "1.0"
+        } catch (_: Exception) {
+            "1.0"
+        }
+        tvVersion?.text = getString(R.string.version_format, versionName)
     }
 
     private fun checkLocationPermission(): Boolean {

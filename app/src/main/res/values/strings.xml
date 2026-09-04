@@ -12,6 +12,7 @@
     <string name="btn_about_github">GitHub Repository</string>
     <string name="btn_about_tcs_map">TCS Fuel Price Map</string>
     <string name="btn_about_privacy_policy">Privacy Policy</string>
+    <string name="version_format">Version %1$s</string>
     <string name="theme_setting_title">App Theme</string>
     <string name="theme_setting_desc">Choose preferred appearance for the app</string>
     <string name="theme_option_system">System default</string>

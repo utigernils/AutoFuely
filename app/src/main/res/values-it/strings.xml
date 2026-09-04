@@ -12,6 +12,7 @@
     <string name="btn_about_github">Repository GitHub</string>
     <string name="btn_about_tcs_map">Mappa prezzi TCS</string>
     <string name="btn_about_privacy_policy">Informativa sulla privacy</string>
+    <string name="version_format">Versione %1$s</string>
     <string name="theme_setting_title">Tema dell\'app</string>
     <string name="theme_setting_desc">Scegli l\'aspetto preferito per l\'app</string>
     <string name="theme_option_system">Predefinito di sistema</string>

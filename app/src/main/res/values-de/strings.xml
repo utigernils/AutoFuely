@@ -12,6 +12,7 @@
     <string name="btn_about_github">GitHub Repository</string>
     <string name="btn_about_tcs_map">TCS Benzinpreis-Karte</string>
     <string name="btn_about_privacy_policy">Datenschutzerklärung</string>
+    <string name="version_format">Version %1$s</string>
     <string name="theme_setting_title">App-Design</string>
     <string name="theme_setting_desc">Wähle das bevorzugte Erscheinungsbild der App</string>
     <string name="theme_option_system">Systemstandard</string>
