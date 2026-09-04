@@ -3,6 +3,7 @@ package com.utigernils.autofuely
 import android.Manifest
 import android.R
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -25,6 +26,15 @@ class MainActivity : AppCompatActivity() {
 
     private val bboxSizeOptions = listOf(3, 5, 8, 10, 15, 20)
     private val maxAgeOptions = listOf(0, 1, 2, 3, 7)
+
+    private val prefChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        when (key) {
+            PreferenceRepository.KEY_FUEL_TYPE -> updateFuelTypeUi()
+            PreferenceRepository.KEY_BBOX_SIZE_KM -> updateBboxSizeUi()
+            PreferenceRepository.KEY_HIDE_NO_PRICE_STATIONS -> updateHideNoPriceUi()
+            PreferenceRepository.KEY_MAX_PRICE_AGE_DAYS -> updateMaxAgeUi()
+        }
+    }
 
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -74,6 +84,56 @@ class MainActivity : AppCompatActivity() {
         setupMaxAgeSpinner()
     }
 
+    override fun onStart() {
+        super.onStart()
+        preferenceRepository.registerOnChangeListener(prefChangeListener)
+        updateAllSettingsUi()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        preferenceRepository.unregisterOnChangeListener(prefChangeListener)
+    }
+
+    private fun updateAllSettingsUi() {
+        updateFuelTypeUi()
+        updateBboxSizeUi()
+        updateHideNoPriceUi()
+        updateMaxAgeUi()
+    }
+
+    private fun updateFuelTypeUi() {
+        val currentFuel = preferenceRepository.getFuelType()
+        val fuelTypes = FuelType.entries
+        val index = fuelTypes.indexOf(currentFuel).coerceAtLeast(0)
+        if (binding.spinnerFuelType.selectedItemPosition != index) {
+            binding.spinnerFuelType.setSelection(index)
+        }
+    }
+
+    private fun updateBboxSizeUi() {
+        val currentSize = preferenceRepository.getBboxSizeKm()
+        val index = bboxSizeOptions.indexOf(currentSize).let { if (it >= 0) it else 4 }
+        if (binding.spinnerBboxSize.selectedItemPosition != index) {
+            binding.spinnerBboxSize.setSelection(index)
+        }
+    }
+
+    private fun updateHideNoPriceUi() {
+        val hide = preferenceRepository.getHideNoPriceStations()
+        if (binding.switchHideNoPrice.isChecked != hide) {
+            binding.switchHideNoPrice.isChecked = hide
+        }
+    }
+
+    private fun updateMaxAgeUi() {
+        val currentMaxAge = preferenceRepository.getMaxPriceAgeDays()
+        val index = maxAgeOptions.indexOf(currentMaxAge).let { if (it >= 0) it else 0 }
+        if (binding.spinnerMaxAge.selectedItemPosition != index) {
+            binding.spinnerMaxAge.setSelection(index)
+        }
+    }
+
     private fun setupFuelTypeSpinner() {
         val fuelTypes = FuelType.entries
         val displayOptions = fuelTypes.map { it.displayName }
@@ -111,13 +171,15 @@ class MainActivity : AppCompatActivity() {
     private fun setupHideNoPriceSwitch() {
         binding.switchHideNoPrice.isChecked = preferenceRepository.getHideNoPriceStations()
         binding.switchHideNoPrice.setOnCheckedChangeListener { _, isChecked ->
-            preferenceRepository.setHideNoPriceStations(isChecked)
-            val msg = if (isChecked) {
-                "Tankstellen ohne Preis werden ausgeblendet."
-            } else {
-                "Alle Tankstellen werden angezeigt."
+            if (preferenceRepository.getHideNoPriceStations() != isChecked) {
+                preferenceRepository.setHideNoPriceStations(isChecked)
+                val msg = if (isChecked) {
+                    "Tankstellen ohne Preis werden ausgeblendet."
+                } else {
+                    "Alle Tankstellen werden angezeigt."
+                }
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
         }
     }
 

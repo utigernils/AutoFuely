@@ -1,5 +1,6 @@
 package com.utigernils.autofuely.car
 
+import android.content.SharedPreferences
 import android.location.Location
 import android.text.Spannable
 import android.text.SpannableString
@@ -56,24 +57,40 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
     private var isLoading = true
     private var errorMessage: String? = null
+    private var fetchJob: Job? = null
     private var autoRefreshJob: Job? = null
+
+    private val prefChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        if (key in listOf(
+                PreferenceRepository.KEY_FUEL_TYPE,
+                PreferenceRepository.KEY_SORT_MODE,
+                PreferenceRepository.KEY_BBOX_SIZE_KM,
+                PreferenceRepository.KEY_HIDE_NO_PRICE_STATIONS,
+                PreferenceRepository.KEY_MAX_PRICE_AGE_DAYS
+            )
+        ) {
+            loadData()
+        }
+    }
 
     init {
         lifecycle.addObserver(this)
-        loadData()
     }
 
     override fun onStart(owner: LifecycleOwner) {
+        preferenceRepository.registerOnChangeListener(prefChangeListener)
         startAutoRefresh()
     }
 
     override fun onStop(owner: LifecycleOwner) {
+        preferenceRepository.unregisterOnChangeListener(prefChangeListener)
         stopAutoRefresh()
     }
 
     private fun startAutoRefresh() {
         stopAutoRefresh()
         autoRefreshJob = CoroutineScope(Dispatchers.Main).launch {
+            loadData()
             while (isActive) {
                 delay(60_000) // Auto refresh every 60 seconds
                 loadData()
@@ -87,10 +104,11 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
     }
 
     private fun loadData() {
+        fetchJob?.cancel()
         isLoading = true
         invalidate()
 
-        CoroutineScope(Dispatchers.Main).launch {
+        fetchJob = CoroutineScope(Dispatchers.Main).launch {
             currentLocation = locationHelper.getLastKnownLocation()
             val bboxSizeKm = preferenceRepository.getBboxSizeKm().toDouble()
             val bbox = locationHelper.calculateBbox(currentLocation, bboxSizeKm)
@@ -121,44 +139,42 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         }
     }
 
-    private fun loadBrandIconsAndDetails(displayList: List<StationBboxItem>) {
-        CoroutineScope(Dispatchers.Main).launch {
-            val icons = mutableMapOf<String, CarIcon>()
-            val details = mutableMapOf<String, StationDetailResponse>()
+    private suspend fun loadBrandIconsAndDetails(displayList: List<StationBboxItem>) {
+        val icons = mutableMapOf<String, CarIcon>()
+        val details = mutableMapOf<String, StationDetailResponse>()
 
-            withContext(Dispatchers.IO) {
-                val iconJobs = displayList.map { station ->
-                    async {
-                        val brand = station.brand
-                        if (!brand.isNullOrEmpty()) {
-                            val icon = brandIconLoader.getBrandIcon(brand)
-                            synchronized(icons) {
-                                icons[brand.lowercase()] = icon
-                            }
+        withContext(Dispatchers.IO) {
+            val iconJobs = displayList.map { station ->
+                async {
+                    val brand = station.brand
+                    if (!brand.isNullOrEmpty()) {
+                        val icon = brandIconLoader.getBrandIcon(brand)
+                        synchronized(icons) {
+                            icons[brand.lowercase()] = icon
                         }
                     }
                 }
-
-                val detailJobs = displayList.map { station ->
-                    async {
-                        val res = repository.fetchStationById(station.id)
-                        res.getOrNull()?.let { detail ->
-                            synchronized(details) {
-                                details[station.id] = detail
-                            }
-                        }
-                    }
-                }
-
-                iconJobs.awaitAll()
-                detailJobs.awaitAll()
             }
 
-            brandIconsMap = icons
-            stationDetailsMap = details
-            isLoading = false
-            invalidate()
+            val detailJobs = displayList.map { station ->
+                async {
+                    val res = repository.fetchStationById(station.id)
+                    res.getOrNull()?.let { detail ->
+                        synchronized(details) {
+                            details[station.id] = detail
+                        }
+                    }
+                }
+            }
+
+            iconJobs.awaitAll()
+            detailJobs.awaitAll()
         }
+
+        brandIconsMap = icons
+        stationDetailsMap = details
+        isLoading = false
+        invalidate()
     }
 
     override fun onGetTemplate(): Template {
