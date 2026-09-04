@@ -1,7 +1,6 @@
 package com.utigernils.autofuely
 
 import android.Manifest
-import android.R
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -44,10 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         if (fineGranted || coarseGranted) {
             updatePermissionUi(true)
-            Toast.makeText(this, "Standortberechtigung erteilt.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_granted_toast), Toast.LENGTH_SHORT).show()
         } else {
             updatePermissionUi(false)
-            Toast.makeText(this, "Standortberechtigung wurde abgelehnt.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_denied_toast), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -136,7 +135,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFuelTypeSpinner() {
         val fuelTypes = FuelType.entries
-        val displayOptions = fuelTypes.map { it.displayName }
+        val displayOptions = fuelTypes.map { getString(it.displayNameResId) }
         val adapter = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
@@ -156,9 +155,10 @@ class MainActivity : AppCompatActivity() {
                 val selectedFuel = fuelTypes[position]
                 if (preferenceRepository.getFuelType() != selectedFuel) {
                     preferenceRepository.setFuelType(selectedFuel)
+                    val fuelName = getString(selectedFuel.displayNameResId)
                     Toast.makeText(
                         this@MainActivity,
-                        "Kraftstoffart auf ${selectedFuel.displayName} geändert.",
+                        getString(R.string.fuel_type_changed, fuelName),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -174,9 +174,9 @@ class MainActivity : AppCompatActivity() {
             if (preferenceRepository.getHideNoPriceStations() != isChecked) {
                 preferenceRepository.setHideNoPriceStations(isChecked)
                 val msg = if (isChecked) {
-                    "Tankstellen ohne Preis werden ausgeblendet."
+                    getString(R.string.hide_no_price_enabled)
                 } else {
-                    "Alle Tankstellen werden angezeigt."
+                    getString(R.string.hide_no_price_disabled)
                 }
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
             }
@@ -185,14 +185,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupMaxAgeSpinner() {
         val displayOptions = maxAgeOptions.map { days ->
-            if (days == 0) "Alle anzeigen" else "Maximal $days ${if (days == 1) "Tag" else "Tage"} alt"
+            if (days == 0) getString(R.string.car_settings_max_age_all) else getString(R.string.car_settings_max_age_days, days)
         }
         val adapter = ArrayAdapter(
             this,
-            R.layout.simple_spinner_item,
+            android.R.layout.simple_spinner_item,
             displayOptions
         ).apply {
-            setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         }
 
         binding.spinnerMaxAge.adapter = adapter
@@ -207,9 +207,9 @@ class MainActivity : AppCompatActivity() {
                 if (preferenceRepository.getMaxPriceAgeDays() != selectedAge) {
                     preferenceRepository.setMaxPriceAgeDays(selectedAge)
                     val msg = if (selectedAge == 0) {
-                        "Filter für Preis-Aktualität deaktiviert."
+                        getString(R.string.max_age_disabled)
                     } else {
-                        "Preise älter als $selectedAge ${if (selectedAge == 1) "Tag" else "Tage"} werden ausgeblendet."
+                        getString(R.string.max_age_enabled, selectedAge)
                     }
                     Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                 }
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                     preferenceRepository.setBboxSizeKm(selectedSize)
                     Toast.makeText(
                         this@MainActivity,
-                        "Suchbereich auf $selectedSize km aktualisiert.",
+                        getString(R.string.bbox_size_changed, selectedSize),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

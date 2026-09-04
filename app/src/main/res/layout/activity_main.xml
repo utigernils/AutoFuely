@@ -49,7 +49,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Android Auto Companion"
+                    android:text="@string/app_subtitle"
                     android:textSize="14sp"
                     android:textColor="#B0BEC5" />
             </LinearLayout>
@@ -102,7 +102,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Einstellungen"
+            android:text="@string/settings_title"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
@@ -126,7 +126,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bevorzugte Kraftstoffart"
+                    android:text="@string/fuel_type_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#B0BEC5"
@@ -152,7 +152,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Suchbereich (Seitenlänge Bounding Box)"
+                    android:text="@string/bbox_size_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#B0BEC5"
@@ -179,7 +179,7 @@
                     android:id="@+id/switchHideNoPrice"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nur Tankstellen mit Preis anzeigen"
+                    android:text="@string/hide_no_price_title"
                     android:textColor="#E0E0E0"
                     android:textSize="15sp"
                     android:textStyle="bold"
@@ -188,7 +188,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Filtert Tankstellen ohne gültige Preisangabe aus."
+                    android:text="@string/hide_no_price_desc"
                     android:textColor="#808080"
                     android:textSize="12sp"
                     android:layout_marginBottom="20dp" />
@@ -229,7 +229,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Standortzugriff"
+                    android:text="@string/location_access_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="#B0BEC5"

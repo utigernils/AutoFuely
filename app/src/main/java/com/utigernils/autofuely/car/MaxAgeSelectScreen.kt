@@ -11,6 +11,7 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.utigernils.autofuely.R
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 
 class MaxAgeSelectScreen(carContext: CarContext) : Screen(carContext), DefaultLifecycleObserver {
@@ -42,12 +43,27 @@ class MaxAgeSelectScreen(carContext: CarContext) : Screen(carContext), DefaultLi
 
         options.forEach { days ->
             val isSelected = days == currentMaxAge
-            val label = if (days == 0) "Alle anzeigen (kein Filter)" else "Maximal $days ${if (days == 1) "Tag" else "Tage"} alt"
-            val titleText = if (isSelected) "✔  $label" else "    $label"
+            val label = if (days == 0) {
+                carContext.getString(R.string.car_max_age_all)
+            } else {
+                carContext.getString(R.string.car_settings_max_age_days, days)
+            }
+            
+            val titleText = if (isSelected) {
+                carContext.getString(R.string.car_select_current, label)
+            } else {
+                carContext.getString(R.string.car_select_not_current, label)
+            }
+
+            val subtitle = if (isSelected) {
+                carContext.getString(R.string.car_current_setting)
+            } else {
+                carContext.getString(R.string.car_tap_to_select)
+            }
 
             val row = Row.Builder()
                 .setTitle(titleText)
-                .addText(if (isSelected) "Aktuelle Einstellung" else "Antippen zum Auswählen")
+                .addText(subtitle)
                 .setOnClickListener {
                     preferenceRepository.setMaxPriceAgeDays(days)
                     screenManager.pop()
@@ -58,7 +74,7 @@ class MaxAgeSelectScreen(carContext: CarContext) : Screen(carContext), DefaultLi
         }
 
         val header = Header.Builder()
-            .setTitle("Max. Alter der Daten")
+            .setTitle(carContext.getString(R.string.car_settings_max_age))
             .setStartHeaderAction(Action.BACK)
             .build()
 

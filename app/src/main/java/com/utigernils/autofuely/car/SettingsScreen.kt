@@ -11,6 +11,7 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.utigernils.autofuely.R
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 
 class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecycleObserver {
@@ -51,8 +52,8 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecy
         // 1. Kraftstoffart
         listBuilder.addItem(
             Row.Builder()
-                .setTitle("Kraftstoffart")
-                .addText(currentFuel.displayName)
+                .setTitle(carContext.getString(R.string.car_settings_fuel_type))
+                .addText(carContext.getString(currentFuel.displayNameResId))
                 .setOnClickListener {
                     screenManager.push(FuelTypeSelectScreen(carContext))
                 }
@@ -62,8 +63,8 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecy
         // 2. Suchbereich
         listBuilder.addItem(
             Row.Builder()
-                .setTitle("Suchbereich")
-                .addText("$currentSize km Bounding Box")
+                .setTitle(carContext.getString(R.string.car_settings_search_radius))
+                .addText(carContext.getString(R.string.car_settings_radius_val, currentSize))
                 .setOnClickListener {
                     screenManager.push(BboxSizeSelectScreen(carContext))
                 }
@@ -71,10 +72,15 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecy
         )
 
         // 3. Nur mit Preis anzeigen
-        val priceToggleText = if (hideNoPrice) "Aktiv (ohne Preis ausblenden)" else "Inaktiv (alle anzeigen)"
+        val priceToggleText = if (hideNoPrice) {
+            carContext.getString(R.string.car_settings_price_filter_active)
+        } else {
+            carContext.getString(R.string.car_settings_price_filter_inactive)
+        }
+        
         listBuilder.addItem(
             Row.Builder()
-                .setTitle("Nur Tankstellen mit Preis")
+                .setTitle(carContext.getString(R.string.car_settings_price_filter))
                 .addText(priceToggleText)
                 .setOnClickListener {
                     preferenceRepository.setHideNoPriceStations(!hideNoPrice)
@@ -85,10 +91,15 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecy
 
         // 4. Max. Alter der Daten
         val currentMaxAge = preferenceRepository.getMaxPriceAgeDays()
-        val ageText = if (currentMaxAge == 0) "Alle anzeigen" else "Maximal $currentMaxAge ${if (currentMaxAge == 1) "Tag" else "Tage"} alt"
+        val ageText = if (currentMaxAge == 0) {
+            carContext.getString(R.string.car_settings_max_age_all)
+        } else {
+            carContext.getString(R.string.car_settings_max_age_days, currentMaxAge)
+        }
+        
         listBuilder.addItem(
             Row.Builder()
-                .setTitle("Max. Alter der Daten")
+                .setTitle(carContext.getString(R.string.car_settings_max_age))
                 .addText(ageText)
                 .setOnClickListener {
                     screenManager.push(MaxAgeSelectScreen(carContext))
@@ -97,7 +108,7 @@ class SettingsScreen(carContext: CarContext) : Screen(carContext), DefaultLifecy
         )
 
         val header = Header.Builder()
-            .setTitle("Einstellungen")
+            .setTitle(carContext.getString(R.string.car_settings_title))
             .setStartHeaderAction(Action.BACK)
             .build()
 

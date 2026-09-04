@@ -1,0 +1,88 @@
+<resources>
+    <!-- App & General -->
+    <string name="app_name">AutoFuely</string>
+    <string name="app_subtitle">Android Auto Companion</string>
+    <string name="github">GitHub</string>
+    <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
+
+    <!-- MainActivity Phone UI -->
+    <string name="mobile_info_message">Diese App ist speziell für Android Auto entwickelt. Um Benzinpreise direkt auf dem Smartphone zu sehen, verwende bitte die offizielle TCS Benzinpreis App.</string>
+    <string name="settings_title">Einstellungen</string>
+    <string name="fuel_type_title">Bevorzugte Kraftstoffart</string>
+    <string name="bbox_size_title">Suchbereich (Seitenlänge Bounding Box)</string>
+    <string name="hide_no_price_title">Nur Tankstellen mit Preis anzeigen</string>
+    <string name="hide_no_price_desc">Filtert Tankstellen ohne gültige Preisangabe aus.</string>
+    <string name="max_data_age_title">Max. Alter der Daten</string>
+
+    <!-- Permissions -->
+    <string name="location_access_title">Standortzugriff</string>
+    <string name="location_permission_needed">Standortberechtigung erforderlich</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+    <string name="permission_granted">Standortzugriff ist aktiv</string>
+    <string name="permission_granted_toast">Standortberechtigung erteilt.</string>
+    <string name="permission_denied_toast">Standortberechtigung wurde abgelehnt.</string>
+
+    <!-- Toasts MainActivity -->
+    <string name="fuel_type_changed">Kraftstoffart auf %1$s geändert.</string>
+    <string name="hide_no_price_enabled">Tankstellen ohne Preis werden ausgeblendet.</string>
+    <string name="hide_no_price_disabled">Alle Tankstellen werden angezeigt.</string>
+    <string name="max_age_disabled">Filter für Preis-Aktualität deaktiviert.</string>
+    <string name="max_age_enabled">Preise älter als %1$d Tag(e) werden ausgeblendet.</string>
+    <string name="bbox_size_changed">Suchbereich auf %1$d km aktualisiert.</string>
+
+    <!-- Enums (FuelType & SortMode) -->
+    <string name="fuel_diesel">Diesel</string>
+    <string name="fuel_sp95">Bleifrei 95 (SP95)</string>
+    <string name="fuel_sp98">Bleifrei 98 (SP98)</string>
+
+    <string name="sort_price">Günstigste</string>
+    <string name="sort_distance">Nächste</string>
+
+    <!-- Car App - Main Map Screen -->
+    <string name="car_app_title">AutoFuely</string>
+    <string name="car_error_loading">Fehler beim Laden der Tankstellen.</string>
+    <string name="car_no_stations">Keine Tankstellen in diesem Bereich gefunden.</string>
+    <string name="car_price_unknown">Preis k.A.</string>
+    <string name="car_time_recently">vor kurzem</string>
+    <string name="car_time_long_ago">vor längerer Zeit</string>
+    <string name="car_time_seconds_ago">vor wenigen Sekunden</string>
+    <string name="car_time_minutes_ago">vor %1$d Min.</string>
+    <string name="car_time_one_hour_ago">vor 1 Std.</string>
+    <string name="car_time_hours_ago">vor %1$d Std.</string>
+    <string name="car_time_one_day_ago">vor 1 Tag</string>
+    <string name="car_time_days_ago">vor %1$d Tagen</string>
+    <string name="car_station_default">Tankstelle</string>
+
+    <!-- Car App - Settings Screen -->
+    <string name="car_settings_title">Einstellungen</string>
+    <string name="car_settings_fuel_type">Kraftstoffart</string>
+    <string name="car_settings_search_radius">Suchbereich</string>
+    <string name="car_settings_radius_val">%1$d km Bounding Box</string>
+    <string name="car_settings_price_filter">Nur Tankstellen mit Preis</string>
+    <string name="car_settings_price_filter_active">Aktiv (ohne Preis ausblenden)</string>
+    <string name="car_settings_price_filter_inactive">Inaktiv (alle anzeigen)</string>
+    <string name="car_settings_max_age">Max. Alter der Daten</string>
+    <string name="car_settings_max_age_all">Alle anzeigen</string>
+    <string name="car_settings_max_age_days">Maximal %1$d Tag(e) alt</string>
+
+    <!-- Car App - Sub Settings Screens -->
+    <string name="car_select_current">✔  %1$s</string>
+    <string name="car_select_not_current">    %1$s</string>
+    <string name="car_select_radius_val">%1$d km</string>
+    <string name="car_current_selection">Aktuell ausgewählt</string>
+    <string name="car_current_radius">Aktueller Suchbereich</string>
+    <string name="car_current_setting">Aktuelle Einstellung</string>
+    <string name="car_tap_to_select">Antippen zum Auswählen</string>
+    <string name="car_max_age_all">Alle anzeigen (kein Filter)</string>
+
+    <!-- Car App - Station Detail Screen -->
+    <string name="car_detail_title">Tankstelle</string>
+    <string name="car_detail_error">Fehler beim Laden der Details.</string>
+    <string name="car_detail_no_address">Keine Adresse vorhanden</string>
+    <string name="car_detail_fuel_prices">Kraftstoffpreise</string>
+    <string name="car_detail_no_prices">Keine Preisinformationen verfügbar</string>
+    <string name="car_detail_tcs_cashback">TCS Mastercard Cashback</string>
+    <string name="car_detail_tcs_yes">Ja - Rabatt mit TCS Mastercard verfügbar</string>
+    <string name="car_detail_tcs_no">Nein</string>
+    <string name="car_detail_nav_start">Navigation starten</string>
+</resources>

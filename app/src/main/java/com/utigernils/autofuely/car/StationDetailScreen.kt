@@ -10,6 +10,7 @@ import androidx.car.app.model.Pane
 import androidx.car.app.model.PaneTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
+import com.utigernils.autofuely.R
 import com.utigernils.autofuely.data.model.StationDetailResponse
 import com.utigernils.autofuely.data.repository.FuelRepository
 import kotlinx.coroutines.CoroutineScope
@@ -43,7 +44,7 @@ class StationDetailScreen(
             result.onSuccess {
                 detailResponse = it
             }.onFailure {
-                errorMessage = "Fehler beim Laden der Details."
+                errorMessage = carContext.getString(R.string.car_detail_error)
             }
             invalidate()
         }
@@ -51,7 +52,7 @@ class StationDetailScreen(
 
     override fun onGetTemplate(): Template {
         val header = Header.Builder()
-            .setTitle("Tankstelle")
+            .setTitle(carContext.getString(R.string.car_detail_title))
             .setStartHeaderAction(Action.BACK)
             .build()
 
@@ -65,8 +66,8 @@ class StationDetailScreen(
         }
 
         val details = detailResponse
-        val name = details?.displayName ?: details?.brand ?: "Tankstelle"
-        val address = details?.formattedAddress ?: "Keine Adresse vorhanden"
+        val name = details?.displayName ?: details?.brand ?: carContext.getString(R.string.car_station_default)
+        val address = details?.formattedAddress ?: carContext.getString(R.string.car_detail_no_address)
 
         paneBuilder.addRow(
             Row.Builder()
@@ -87,25 +88,25 @@ class StationDetailScreen(
             }
             sb.toString().trim()
         } else {
-            "Keine Preisinformationen verfügbar"
+            carContext.getString(R.string.car_detail_no_prices)
         }
 
         paneBuilder.addRow(
             Row.Builder()
-                .setTitle("Kraftstoffpreise")
+                .setTitle(carContext.getString(R.string.car_detail_fuel_prices))
                 .addText(priceText)
                 .build()
         )
 
         // TCS Mastercard Cashback
         val cashbackText = if (details?.hasTCSMastercardCashback == true) {
-            "Ja - Rabatt mit TCS Mastercard verfügbar"
+            carContext.getString(R.string.car_detail_tcs_yes)
         } else {
-            "Nein"
+            carContext.getString(R.string.car_detail_tcs_no)
         }
         paneBuilder.addRow(
             Row.Builder()
-                .setTitle("TCS Mastercard Cashback")
+                .setTitle(carContext.getString(R.string.car_detail_tcs_cashback))
                 .addText(cashbackText)
                 .build()
         )
@@ -115,7 +116,7 @@ class StationDetailScreen(
         val navLng = details?.location?.lng ?: fallbackLng
         if (navLat != null && navLng != null) {
             val navAction = Action.Builder()
-                .setTitle("Navigation starten")
+                .setTitle(carContext.getString(R.string.car_detail_nav_start))
                 .setOnClickListener {
                     launchNavigation(navLat, navLng)
                 }
