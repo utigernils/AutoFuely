@@ -73,6 +73,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:contentDescription="@null"
+                            android:rotation="180"
                             android:src="@drawable/ic_expand_more"
                             app:tint="#B0BEC5" />
                     </LinearLayout>
@@ -85,7 +86,7 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:paddingBottom="16dp"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <View
                             android:layout_width="match_parent"
