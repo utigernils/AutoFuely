@@ -14,6 +14,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
 import com.utigernils.autofuely.data.model.FuelType
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 import com.utigernils.autofuely.databinding.ActivityMainBinding
@@ -52,8 +55,33 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply top padding to header
+            val header = findViewById<View>(R.id.header_layout)
+            header?.setPadding(
+                header.paddingLeft,
+                systemBars.top + (20 * resources.displayMetrics.density).toInt(),
+                header.paddingRight,
+                header.paddingBottom
+            )
+            
+            // Apply bottom padding to scroll content
+            val content = findViewById<View>(R.id.content_layout)
+            content?.setPadding(
+                content.paddingLeft,
+                content.paddingTop,
+                content.paddingRight,
+                systemBars.bottom + (20 * resources.displayMetrics.density).toInt()
+            )
+            
+            insets
+        }
 
         preferenceRepository = PreferenceRepository(this)
 

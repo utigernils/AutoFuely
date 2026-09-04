@@ -1,6 +1,7 @@
 package com.utigernils.autofuely
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,9 +15,24 @@ class SettingsActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root_layout)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root_layout)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            
+            val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+            toolbar.setPadding(
+                toolbar.paddingLeft,
+                systemBars.top,
+                toolbar.paddingRight,
+                toolbar.paddingBottom
+            )
+            
+            val rootLayout = findViewById<View>(R.id.root_layout)
+            rootLayout.setPadding(
+                systemBars.left,
+                0,
+                systemBars.right,
+                systemBars.bottom
+            )
             insets
         }
 
