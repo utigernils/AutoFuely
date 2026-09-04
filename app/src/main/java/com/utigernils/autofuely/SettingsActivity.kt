@@ -6,20 +6,28 @@ import android.transition.TransitionManager
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.radiobutton.MaterialRadioButton
+import com.utigernils.autofuely.data.repository.PreferenceRepository
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var preferenceRepository: PreferenceRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
+
+        preferenceRepository = PreferenceRepository(this)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root_layout)) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -57,6 +65,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         setupAccordions()
+        setupThemeSelection()
 
         val tvFooter = findViewById<TextView>(R.id.tvFooterMadeBy)
         tvFooter.text = HtmlCompat.fromHtml(
@@ -64,6 +73,32 @@ class SettingsActivity : AppCompatActivity() {
             HtmlCompat.FROM_HTML_MODE_LEGACY
         )
         tvFooter.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    private fun setupThemeSelection() {
+        val radioGroup = findViewById<RadioGroup>(R.id.radioGroupTheme)
+        val radioSystem = findViewById<MaterialRadioButton>(R.id.radioThemeSystem)
+        val radioDark = findViewById<MaterialRadioButton>(R.id.radioThemeDark)
+        val radioLight = findViewById<MaterialRadioButton>(R.id.radioThemeLight)
+
+        when (preferenceRepository.getThemeMode()) {
+            PreferenceRepository.THEME_LIGHT -> radioLight.isChecked = true
+            PreferenceRepository.THEME_DARK -> radioDark.isChecked = true
+            else -> radioSystem.isChecked = true
+        }
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val (newMode, nightMode) = when (checkedId) {
+                R.id.radioThemeLight -> PreferenceRepository.THEME_LIGHT to AppCompatDelegate.MODE_NIGHT_NO
+                R.id.radioThemeDark -> PreferenceRepository.THEME_DARK to AppCompatDelegate.MODE_NIGHT_YES
+                else -> PreferenceRepository.THEME_SYSTEM to AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+
+            if (preferenceRepository.getThemeMode() != newMode) {
+                preferenceRepository.setThemeMode(newMode)
+                AppCompatDelegate.setDefaultNightMode(nightMode)
+            }
+        }
     }
 
     private fun setupAccordions() {
