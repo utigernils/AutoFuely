@@ -67,7 +67,7 @@
     <string name="sort_distance">Closest</string>
 
     <!-- Car App - Main Map Screen -->
-    <string name="car_app_title">AutoFuely</string>
+    <string name="car_app_title">Gas Stations</string>
     <string name="car_error_loading">Error loading gas stations.</string>
     <string name="car_no_stations">No gas stations found in this area.</string>
     <string name="car_price_unknown">Price N/A</string>
