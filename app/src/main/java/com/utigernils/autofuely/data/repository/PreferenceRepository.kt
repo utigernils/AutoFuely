@@ -26,7 +26,7 @@ class PreferenceRepository(context: Context) {
     }
 
     fun getFuelType(): FuelType {
-        val code = prefs.getString(KEY_FUEL_TYPE, FuelType.DIESEL.code) ?: FuelType.DIESEL.code
+        val code = prefs.getString(KEY_FUEL_TYPE, FuelType.SP95.code) ?: FuelType.SP95.code
         return FuelType.fromCode(code)
     }
 
@@ -48,7 +48,7 @@ class PreferenceRepository(context: Context) {
     }
 
     fun getBboxSizeKm(): Int {
-        return prefs.getInt(KEY_BBOX_SIZE_KM, 15)
+        return prefs.getInt(KEY_BBOX_SIZE_KM, 5)
     }
 
     fun setBboxSizeKm(sizeKm: Int) {
@@ -64,7 +64,7 @@ class PreferenceRepository(context: Context) {
     }
 
     fun getMaxPriceAgeDays(): Int {
-        return prefs.getInt(KEY_MAX_PRICE_AGE_DAYS, 0)
+        return prefs.getInt(KEY_MAX_PRICE_AGE_DAYS, 1)
     }
 
     fun setMaxPriceAgeDays(days: Int) {
