@@ -351,7 +351,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="16dp"
                 android:textColor="@color/text_secondary"
-                android:textColorLink="#29B6F6"
+                android:textColorLink="@color/text_secondary"
                 android:textSize="13sp" />
 
         </LinearLayout>
