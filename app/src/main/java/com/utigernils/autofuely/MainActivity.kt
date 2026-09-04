@@ -1,7 +1,10 @@
 package com.utigernils.autofuely
 
+import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.transition.TransitionManager
 import android.view.View
@@ -10,6 +13,8 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.car.app.connection.CarConnection
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.utigernils.autofuely.data.model.FuelType
@@ -20,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferenceRepository: PreferenceRepository
+    private var isCarConnected = false
 
     private val bboxSizeOptions = listOf(3, 5, 8, 10, 15, 20)
     private val maxAgeOptions = listOf(0, 1, 2, 3, 7)
@@ -74,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
         setupMaxAgeSpinner()
+        setupCarConnectionObserver()
     }
 
     override fun onStart() {
@@ -82,9 +89,68 @@ class MainActivity : AppCompatActivity() {
         updateAllSettingsUi()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateAppStatus()
+    }
+
     override fun onStop() {
         super.onStop()
         preferenceRepository.unregisterOnChangeListener(prefChangeListener)
+    }
+
+    private fun setupCarConnectionObserver() {
+        try {
+            CarConnection(this).type.observe(this) { type ->
+                isCarConnected = type != CarConnection.CONNECTION_TYPE_NOT_CONNECTED
+                updateAppStatus()
+            }
+        } catch (_: Exception) {
+            updateAppStatus(hasUnexpectedError = true)
+        }
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        val fine = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        return fine || coarse
+    }
+
+    private fun updateAppStatus(hasUnexpectedError: Boolean = false) {
+        val hasPermission = checkLocationPermission()
+
+        val (titleRes, descRes, colorHex) = when {
+            !hasPermission -> Triple(
+                R.string.status_no_permission_title,
+                R.string.status_no_permission_desc,
+                "#E53935"
+            )
+            hasUnexpectedError -> Triple(
+                R.string.status_error_title,
+                R.string.status_error_desc,
+                "#E53935"
+            )
+            !isCarConnected -> Triple(
+                R.string.status_no_car_title,
+                R.string.status_no_car_desc,
+                "#FF9800"
+            )
+            else -> Triple(
+                R.string.status_active_title,
+                R.string.status_active_desc,
+                "#4CAF50"
+            )
+        }
+
+        val color = Color.parseColor(colorHex)
+        binding.tvStatusTitle.text = getString(titleRes)
+        binding.tvStatusTitle.setTextColor(color)
+        binding.tvStatusDesc.text = getString(descRes)
+        binding.cardAppStatus.strokeColor = color
     }
 
     private fun setupAccordions() {

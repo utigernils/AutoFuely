@@ -23,7 +23,14 @@
     <string name="privacy_policy"><u>Privacy Policy</u></string>
 
     <!-- MainActivity Phone UI -->
-    <string name="mobile_info_message">This app is specifically designed for Android Auto. To view fuel prices directly on your smartphone, please use the official TCS Benzinpreis App.</string>
+    <string name="status_active_title">Active</string>
+    <string name="status_active_desc">All systems operational. AutoFuely is ready for Android Auto.</string>
+    <string name="status_no_car_title">Android Auto Disconnected</string>
+    <string name="status_no_car_desc">Connect your smartphone to your vehicle via USB or Wireless to use AutoFuely on your car display.</string>
+    <string name="status_no_permission_title">Location Permission Missing</string>
+    <string name="status_no_permission_desc">Location access is required. Please grant location permission in App Settings.</string>
+    <string name="status_error_title">Unexpected Error</string>
+    <string name="status_error_desc">An error occurred while accessing location or fuel price services.</string>
     <string name="settings_title">Settings</string>
     <string name="filter_settings_title">Filter Settings</string>
     <string name="fuel_type_title">Preferred Fuel Type</string>

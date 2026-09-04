@@ -23,7 +23,14 @@
     <string name="privacy_policy"><u>Informativa sulla privacy</u></string>
 
     <!-- MainActivity Phone UI -->
-    <string name="mobile_info_message">Questa applicazione è progettata specificamente per Android Auto. Per visualizzare i prezzi del carburante direttamente sul tuo smartphone, utilizza l\'app ufficiale Prezzi carburante TCS.</string>
+    <string name="status_active_title">Attivo</string>
+    <string name="status_active_desc">Tutti i sistemi sono operativi. AutoFuely è pronto per Android Auto.</string>
+    <string name="status_no_car_title">Android Auto non connesso</string>
+    <string name="status_no_car_desc">Connetti lo smartphone al veicolo tramite USB o wireless per usare AutoFuely sul display dell\'auto.</string>
+    <string name="status_no_permission_title">Autorizzazione posizione mancante</string>
+    <string name="status_no_permission_desc">L\'accesso alla posizione è richiesto. Concedi l\'autorizzazione nelle impostazioni dell\'app.</string>
+    <string name="status_error_title">Errore inaspettato</string>
+    <string name="status_error_desc">Si è verificato un errore durante l\'accesso ai servizi di posizione o dei prezzi del carburante.</string>
     <string name="settings_title">Impostazioni</string>
     <string name="filter_settings_title">Impostazioni filtro</string>
     <string name="fuel_type_title">Carburante preferito</string>
