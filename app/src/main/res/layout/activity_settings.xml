@@ -97,9 +97,42 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_placeholder_text"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/theme_setting_desc"
                             android:textColor="#B0BEC5"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/radioThemeSystem"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:checked="true"
+                                android:text="@string/theme_option_system"
+                                android:textColor="#E0E0E0"
+                                android:textSize="15sp" />
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/radioThemeDark"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/theme_option_dark"
+                                android:textColor="#E0E0E0"
+                                android:textSize="15sp" />
+
+                            <com.google.android.material.radiobutton.MaterialRadioButton
+                                android:id="@+id/radioThemeLight"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/theme_option_light"
+                                android:textColor="#E0E0E0"
+                                android:textSize="15sp" />
+                        </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

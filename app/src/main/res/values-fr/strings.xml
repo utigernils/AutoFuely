@@ -8,6 +8,11 @@
     <string name="settings_accordion_appearance">Apparence</string>
     <string name="settings_accordion_permissions">Autorisations</string>
     <string name="settings_accordion_about">À propos</string>
+    <string name="theme_setting_title">Thème de l\'application</string>
+    <string name="theme_setting_desc">Choisissez l\'apparence préférée pour l\'application</string>
+    <string name="theme_option_system">Thème du système</string>
+    <string name="theme_option_dark">Sombre</string>
+    <string name="theme_option_light">Clair</string>
     <string name="settings_placeholder_text">Contenu réservé</string>
     <string name="footer_made_by">Fait avec 🩶 par &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Politique de confidentialité</u></string>
