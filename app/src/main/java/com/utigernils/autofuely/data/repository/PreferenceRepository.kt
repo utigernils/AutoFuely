@@ -10,11 +10,19 @@ class PreferenceRepository(context: Context) {
         context.getSharedPreferences("autofuely_prefs", Context.MODE_PRIVATE)
 
     companion object {
-        private const val KEY_FUEL_TYPE = "key_fuel_type"
-        private const val KEY_SORT_MODE = "key_sort_mode"
-        private const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
-        private const val KEY_HIDE_NO_PRICE_STATIONS = "key_hide_no_price_stations"
-        private const val KEY_MAX_PRICE_AGE_DAYS = "key_max_price_age_days"
+        const val KEY_FUEL_TYPE = "key_fuel_type"
+        const val KEY_SORT_MODE = "key_sort_mode"
+        const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
+        const val KEY_HIDE_NO_PRICE_STATIONS = "key_hide_no_price_stations"
+        const val KEY_MAX_PRICE_AGE_DAYS = "key_max_price_age_days"
+    }
+
+    fun registerOnChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterOnChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        prefs.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     fun getFuelType(): FuelType {
