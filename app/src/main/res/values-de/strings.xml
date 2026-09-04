@@ -3,6 +3,23 @@
     <string name="app_name">AutoFuely</string>
     <string name="app_subtitle">Android Auto Companion</string>
     <string name="github">GitHub</string>
+    <string name="action_app_settings">App-Einstellungen</string>
+    <string name="title_app_settings">App-Einstellungen</string>
+    <string name="settings_accordion_appearance">Erscheinungsbild</string>
+    <string name="settings_accordion_permissions">Berechtigungen</string>
+    <string name="settings_accordion_about">Über die App</string>
+    <string name="about_app_description">AutoFuely ist eine Open-Source Android Auto App, die aktuelle Tankstellen-Kraftstoffpreise in der Schweiz direkt auf dem Display deines Autos anzeigt.\n\nEntwickelt von Nils Utiger. Die Preisdaten stammen von der TCS (Touring Club Schweiz) Benzinpreis API. Um Benzinpreis-Karten direkt auf dem Smartphone anzuzeigen, nutze bitte die offizielle TCS-Karte.</string>
+    <string name="btn_about_github">GitHub Repository</string>
+    <string name="btn_about_tcs_map">TCS Benzinpreis-Karte</string>
+    <string name="btn_about_privacy_policy">Datenschutzerklärung</string>
+    <string name="version_format">Version %1$s</string>
+    <string name="theme_setting_title">App-Design</string>
+    <string name="theme_setting_desc">Wähle das bevorzugte Erscheinungsbild der App</string>
+    <string name="theme_option_system">Systemstandard</string>
+    <string name="theme_option_dark">Dunkel</string>
+    <string name="theme_option_light">Hell</string>
+    <string name="settings_placeholder_text">Platzhalter-Inhalt</string>
+    <string name="footer_made_by">Mit 🩶 gemacht von &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 
     <!-- MainActivity Phone UI -->

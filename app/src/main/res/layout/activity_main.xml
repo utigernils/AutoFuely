@@ -1,34 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
-    android:fillViewport="true"
+    android:background="@color/bg_main"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <!-- Header -->
     <LinearLayout
+        android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:background="@color/bg_surface_header"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
 
-        <!-- Header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp">
-
-            <ImageView
-                android:id="@+id/ivAppIcon"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@mipmap/ic_launcher"
-                android:contentDescription="@string/app_name" />
+        <ImageView
+            android:id="@+id/ivAppIcon"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/app_name" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -44,18 +42,18 @@
                     android:text="@string/app_name"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="#FFFFFF" />
+                    android:textColor="@color/text_primary" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/app_subtitle"
                     android:textSize="14sp"
-                    android:textColor="#B0BEC5" />
+                    android:textColor="@color/text_secondary" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGithub"
+                android:id="@+id/btnSettings"
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -64,28 +62,43 @@
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                android:contentDescription="@string/github"
-                app:icon="@drawable/ic_github"
+                android:contentDescription="@string/action_app_settings"
+                app:icon="@drawable/ic_settings"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:iconSize="24dp"
-                app:iconTint="#FFFFFF"
-                app:backgroundTint="#2A2A2A"
+                app:iconTint="@color/icon_tint"
+                app:backgroundTint="@color/bg_button_icon"
                 app:cornerRadius="12dp"
-                app:strokeColor="#3D3D3D"
+                app:strokeColor="@color/stroke_button_icon"
                 app:strokeWidth="1dp" />
 
         </LinearLayout>
 
-        <!-- Info Card -->
-        <com.google.android.material.card.MaterialCardView
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/content_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            app:cardBackgroundColor="#1E1E1E"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:clipToPadding="false">
+
+            <!-- Info Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:cardBackgroundColor="@color/bg_surface_card"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,7 +113,7 @@
                     android:text="@string/mobile_info_message"
                     android:textSize="15sp"
                     android:lineSpacingExtra="3dp"
-                    android:textColor="#E0E0E0" />
+                    android:textColor="@color/text_body" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -112,13 +125,13 @@
             android:text="@string/settings_title"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary"
             android:layout_marginBottom="12dp" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="#1E1E1E"
+            app:cardBackgroundColor="@color/bg_surface_card"
             app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
             app:strokeWidth="0dp">
@@ -136,7 +149,7 @@
                     android:text="@string/fuel_type_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#B0BEC5"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="8dp" />
 
                 <Spinner
@@ -146,13 +159,13 @@
                     android:background="@drawable/bg_spinner_dark"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="20dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2C2C2C"
+                    android:background="@color/divider_color"
                     android:layout_marginBottom="20dp" />
 
                 <!-- BBox Size Dropdown -->
@@ -162,7 +175,7 @@
                     android:text="@string/bbox_size_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#B0BEC5"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="8dp" />
 
                 <Spinner
@@ -172,13 +185,13 @@
                     android:background="@drawable/bg_spinner_dark"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="20dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2C2C2C"
+                    android:background="@color/divider_color"
                     android:layout_marginBottom="20dp" />
 
                 <!-- Filter Toggle for Stations without Price -->
@@ -187,7 +200,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/hide_no_price_title"
-                    android:textColor="#E0E0E0"
+                    android:textColor="@color/text_body"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="4dp" />
@@ -196,14 +209,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/hide_no_price_desc"
-                    android:textColor="#808080"
+                    android:textColor="@color/text_secondary"
                     android:textSize="12sp"
                     android:layout_marginBottom="20dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#2C2C2C"
+                    android:background="@color/divider_color"
                     android:layout_marginBottom="20dp" />
 
                 <!-- Max Data Age Dropdown -->
@@ -213,7 +226,7 @@
                     android:text="@string/max_data_age_title"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#B0BEC5"
+                    android:textColor="@color/text_secondary"
                     android:layout_marginBottom="8dp" />
 
                 <Spinner
@@ -223,61 +236,12 @@
                     android:background="@drawable/bg_spinner_dark"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/text_primary"
                     android:layout_marginBottom="20dp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#2C2C2C"
-                    android:layout_marginBottom="20dp" />
-
-                <!-- Location Permission -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/location_access_title"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#B0BEC5"
-                    android:layout_marginBottom="8dp" />
-
-                <TextView
-                    android:id="@+id/tvLocationStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/permission_granted"
-                    android:textColor="#66BB6A"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGrantLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/grant_permission"
-                    app:cornerRadius="24dp"
-                    app:backgroundTint="#29B6F6"
-                    android:textColor="#000000"
-                    android:textStyle="bold" />
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Privacy Policy Link -->
-        <TextView
-            android:id="@+id/tvPrivacyPolicy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/privacy_policy"
-            android:textColor="#9E9E9E"
-            android:textSize="13sp"
-            android:background="?attr/selectableItemBackground"
-            android:padding="8dp" />
-
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

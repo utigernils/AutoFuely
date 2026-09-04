@@ -1,9 +1,7 @@
 package com.utigernils.autofuely
 
-import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +12,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
 import com.utigernils.autofuely.data.model.FuelType
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 import com.utigernils.autofuely.databinding.ActivityMainBinding
@@ -35,46 +36,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
-        if (fineGranted || coarseGranted) {
-            updatePermissionUi(true)
-            Toast.makeText(this, getString(R.string.permission_granted_toast), Toast.LENGTH_SHORT).show()
-        } else {
-            updatePermissionUi(false)
-            Toast.makeText(this, getString(R.string.permission_denied_toast), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply top padding to header
+            val header = findViewById<View>(R.id.header_layout)
+            header?.setPadding(
+                header.paddingLeft,
+                systemBars.top + (20 * resources.displayMetrics.density).toInt(),
+                header.paddingRight,
+                header.paddingBottom
+            )
+            
+            // Apply bottom padding to scroll content
+            val content = findViewById<View>(R.id.content_layout)
+            content?.setPadding(
+                content.paddingLeft,
+                content.paddingTop,
+                content.paddingRight,
+                systemBars.bottom + (20 * resources.displayMetrics.density).toInt()
+            )
+            
+            insets
+        }
 
         preferenceRepository = PreferenceRepository(this)
 
-        val hasPermission = checkLocationPermission()
-        updatePermissionUi(hasPermission)
-
-        binding.btnGrantLocation.setOnClickListener {
-            requestLocationPermissions()
-        }
-
-        binding.btnGithub.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
-            startActivity(intent)
-        }
-
-        binding.tvPrivacyPolicy.setOnClickListener {
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
-            )
-            startActivity(intent)
+        binding.btnSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
         setupFuelTypeSpinner()
@@ -249,39 +244,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
-    private fun checkLocationPermission(): Boolean {
-        val fine = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val coarse = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        return fine || coarse
-    }
-
-    private fun requestLocationPermissions() {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
-
-    private fun updatePermissionUi(hasPermission: Boolean) {
-        if (hasPermission) {
-            binding.btnGrantLocation.visibility = View.GONE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.permission_granted)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#66BB6A"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
-        } else {
-            binding.btnGrantLocation.visibility = View.VISIBLE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.location_permission_needed)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#FFA726"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
         }
     }
 }
