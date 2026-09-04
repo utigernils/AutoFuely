@@ -135,7 +135,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 loadBrandIconsAndDetails(list, sortedList)
             }.onFailure {
                 if (stations.isEmpty()) {
-                    errorMessage = "Fehler beim Laden der Tankstellen."
+                    errorMessage = carContext.getString(R.string.car_error_loading)
                 }
                 isLoading = false
                 invalidate()
@@ -203,7 +203,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         // Action 1: Sort Mode Toggle
         actionStripBuilder.addAction(
             Action.Builder()
-                .setTitle(if (currentSortMode == SortMode.PRICE) "Günstigste" else "Nächste")
+                .setTitle(carContext.getString(currentSortMode.displayNameResId))
                 .setOnClickListener {
                     val nextSortMode = if (currentSortMode == SortMode.PRICE) SortMode.DISTANCE else SortMode.PRICE
                     preferenceRepository.setSortMode(nextSortMode)
@@ -227,7 +227,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         )
 
         val templateBuilder = PlaceListMapTemplate.Builder()
-            .setTitle("AutoFuely")
+            .setTitle(carContext.getString(R.string.car_app_title))
             .setHeaderAction(Action.APP_ICON)
             .setActionStrip(actionStripBuilder.build())
 
@@ -267,7 +267,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
 
         if (filteredStations.isEmpty()) {
             itemListBuilder.setNoItemsMessage(
-                errorMessage ?: "Keine Tankstellen in diesem Bereich gefunden."
+                errorMessage ?: carContext.getString(R.string.car_no_stations)
             )
         } else {
             val displayList = filteredStations.take(6)
@@ -280,11 +280,11 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     station.longitude
                 )
 
-                val name = station.displayName ?: station.brand ?: "Tankstelle"
+                val name = station.displayName ?: station.brand ?: carContext.getString(R.string.car_station_default)
                 val priceFormatted = if (station.price != null && station.price > 0) {
                     "CHF ${String.format(Locale.GERMANY, "%.2f", station.price)}"
                 } else {
-                    "Preis k.A."
+                    carContext.getString(R.string.car_price_unknown)
                 }
 
                 // Line 1: Price + Distance (with DistanceSpan & Green highlight for cheapest)
@@ -332,11 +332,13 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                     }
                     Pair(relativeStr, c)
                 } else {
+                    val recent = carContext.getString(R.string.car_time_recently)
+                    val old = carContext.getString(R.string.car_time_long_ago)
                     when (fiabilityLevel) {
-                        "CONFIDENT", "FEW_RECENT_PRICES" -> Pair("vor kurzem", CarColor.GREEN)
-                        "OLD_LAST_UPDATE" -> Pair("vor längerer Zeit", CarColor.YELLOW)
-                        "OUTDATED_LAST_PRICE_UPDATE" -> Pair("vor längerer Zeit", CarColor.RED)
-                        else -> Pair("vor kurzem", CarColor.GREEN)
+                        "CONFIDENT", "FEW_RECENT_PRICES" -> Pair(recent, CarColor.GREEN)
+                        "OLD_LAST_UPDATE" -> Pair(old, CarColor.YELLOW)
+                        "OUTDATED_LAST_PRICE_UPDATE" -> Pair(old, CarColor.RED)
+                        else -> Pair(recent, CarColor.GREEN)
                     }
                 }
 
@@ -389,19 +391,19 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
     private fun formatRelativeTime(timestampMs: Long): String {
         val now = System.currentTimeMillis()
         val diffMs = now - timestampMs
-        if (diffMs < 0) return "vor wenigen Minuten"
+        if (diffMs < 0) return carContext.getString(R.string.car_time_seconds_ago)
 
         val minutes = diffMs / (1000 * 60)
         val hours = minutes / 60
         val days = hours / 24
 
         return when {
-            minutes < 1 -> "vor wenigen Sekunden"
-            minutes < 60 -> "vor $minutes Min."
-            hours == 1L -> "vor 1 Std."
-            hours < 24 -> "vor $hours Std."
-            days == 1L -> "vor 1 Tag"
-            else -> "vor $days Tagen"
+            minutes < 1 -> carContext.getString(R.string.car_time_seconds_ago)
+            minutes < 60 -> carContext.getString(R.string.car_time_minutes_ago, minutes)
+            hours == 1L -> carContext.getString(R.string.car_time_one_hour_ago)
+            hours < 24 -> carContext.getString(R.string.car_time_hours_ago, hours)
+            days == 1L -> carContext.getString(R.string.car_time_one_day_ago)
+            else -> carContext.getString(R.string.car_time_days_ago, days)
         }
     }
 

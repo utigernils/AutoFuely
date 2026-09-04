@@ -11,6 +11,7 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.utigernils.autofuely.R
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 
 class BboxSizeSelectScreen(carContext: CarContext) : Screen(carContext), DefaultLifecycleObserver {
@@ -42,11 +43,22 @@ class BboxSizeSelectScreen(carContext: CarContext) : Screen(carContext), Default
 
         options.forEach { sizeKm ->
             val isSelected = sizeKm == currentSize
-            val titleText = if (isSelected) "✔  $sizeKm km" else "    $sizeKm km"
+            val label = carContext.getString(R.string.car_select_radius_val, sizeKm)
+            val titleText = if (isSelected) {
+                carContext.getString(R.string.car_select_current, label)
+            } else {
+                carContext.getString(R.string.car_select_not_current, label)
+            }
+            
+            val subtitle = if (isSelected) {
+                carContext.getString(R.string.car_current_radius)
+            } else {
+                carContext.getString(R.string.car_tap_to_select)
+            }
 
             val row = Row.Builder()
                 .setTitle(titleText)
-                .addText(if (isSelected) "Aktueller Suchbereich" else "Antippen zum Auswählen")
+                .addText(subtitle)
                 .setOnClickListener {
                     preferenceRepository.setBboxSizeKm(sizeKm)
                     screenManager.pop()
@@ -57,7 +69,7 @@ class BboxSizeSelectScreen(carContext: CarContext) : Screen(carContext), Default
         }
 
         val header = Header.Builder()
-            .setTitle("Suchbereich")
+            .setTitle(carContext.getString(R.string.car_settings_search_radius))
             .setStartHeaderAction(Action.BACK)
             .build()
 

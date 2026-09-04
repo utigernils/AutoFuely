@@ -1,9 +1,12 @@
 package com.utigernils.autofuely.data.model
 
-enum class FuelType(val code: String, val displayName: String) {
-    DIESEL("DIESEL", "Diesel"),
-    SP95("SP95", "Bleifrei 95 (SP95)"),
-    SP98("SP98", "Bleifrei 98 (SP98)");
+import androidx.annotation.StringRes
+import com.utigernils.autofuely.R
+
+enum class FuelType(val code: String, @param:StringRes val displayNameResId: Int) {
+    DIESEL("DIESEL", R.string.fuel_diesel),
+    SP95("SP95", R.string.fuel_sp95),
+    SP98("SP98", R.string.fuel_sp98);
 
     companion object {
         fun fromCode(code: String): FuelType {

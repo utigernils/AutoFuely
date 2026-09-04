@@ -1,20 +1,88 @@
 <resources>
+    <!-- App & General -->
     <string name="app_name">AutoFuely</string>
+    <string name="app_subtitle">Android Auto Companion</string>
     <string name="github">GitHub</string>
-    <string name="mobile_info_message">Diese App ist speziell für Android Auto entwickelt. Um Benzinpreise direkt auf dem Smartphone zu sehen, verwende bitte die offizielle TCS Benzinpreis App.</string>
-    <string name="location_permission_needed">Standortberechtigung erforderlich</string>
-    <string name="grant_permission">Berechtigung erteilen</string>
-    <string name="permission_granted">Standortzugriff ist aktiv</string>
-    <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
-    <string name="max_data_age_title">Max. Alter der Daten</string>
+    <string name="privacy_policy"><u>Privacy Policy</u></string>
 
-    <!-- Car App Strings -->
-    <string name="car_app_title">TCS Benzinpreise CH</string>
-    <string name="car_fuel_selector_title">Kraftstoff wählen</string>
-    <string name="car_sort_title">Sortierung</string>
-    <string name="car_sort_price">Günstigste zuerst</string>
-    <string name="car_sort_distance">Nächste zuerst</string>
-    <string name="car_refresh">Aktualisieren</string>
-    <string name="car_loading">Lade Tankstellen…</string>
-    <string name="car_no_stations">Keine Tankstellen in diesem Bereich gefunden.</string>
+    <!-- MainActivity Phone UI -->
+    <string name="mobile_info_message">This app is specifically designed for Android Auto. To view fuel prices directly on your smartphone, please use the official TCS Benzinpreis App.</string>
+    <string name="settings_title">Settings</string>
+    <string name="fuel_type_title">Preferred Fuel Type</string>
+    <string name="bbox_size_title">Search Radius (Bounding Box Size)</string>
+    <string name="hide_no_price_title">Only Show Stations with Prices</string>
+    <string name="hide_no_price_desc">Filters out stations without valid price information.</string>
+    <string name="max_data_age_title">Max Data Age</string>
+
+    <!-- Permissions -->
+    <string name="location_access_title">Location Access</string>
+    <string name="location_permission_needed">Location permission required</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="permission_granted">Location access is active</string>
+    <string name="permission_granted_toast">Location permission granted.</string>
+    <string name="permission_denied_toast">Location permission denied.</string>
+
+    <!-- Toasts MainActivity -->
+    <string name="fuel_type_changed">Fuel type changed to %1$s.</string>
+    <string name="hide_no_price_enabled">Stations without prices will be hidden.</string>
+    <string name="hide_no_price_disabled">All stations will be shown.</string>
+    <string name="max_age_disabled">Filter for price currency disabled.</string>
+    <string name="max_age_enabled">Prices older than %1$d day(s) will be hidden.</string>
+    <string name="bbox_size_changed">Search radius updated to %1$d km.</string>
+
+    <!-- Enums (FuelType & SortMode) -->
+    <string name="fuel_diesel">Diesel</string>
+    <string name="fuel_sp95">Unleaded 95 (SP95)</string>
+    <string name="fuel_sp98">Unleaded 98 (SP98)</string>
+
+    <string name="sort_price">Cheapest</string>
+    <string name="sort_distance">Closest</string>
+
+    <!-- Car App - Main Map Screen -->
+    <string name="car_app_title">AutoFuely</string>
+    <string name="car_error_loading">Error loading gas stations.</string>
+    <string name="car_no_stations">No gas stations found in this area.</string>
+    <string name="car_price_unknown">Price N/A</string>
+    <string name="car_time_recently">recently</string>
+    <string name="car_time_long_ago">a while ago</string>
+    <string name="car_time_seconds_ago">a few seconds ago</string>
+    <string name="car_time_minutes_ago">%1$d min ago</string>
+    <string name="car_time_one_hour_ago">1 hr ago</string>
+    <string name="car_time_hours_ago">%1$d hrs ago</string>
+    <string name="car_time_one_day_ago">1 day ago</string>
+    <string name="car_time_days_ago">%1$d days ago</string>
+    <string name="car_station_default">Gas Station</string>
+
+    <!-- Car App - Settings Screen -->
+    <string name="car_settings_title">Settings</string>
+    <string name="car_settings_fuel_type">Fuel Type</string>
+    <string name="car_settings_search_radius">Search Radius</string>
+    <string name="car_settings_radius_val">%1$d km Bounding Box</string>
+    <string name="car_settings_price_filter">Only Stations with Price</string>
+    <string name="car_settings_price_filter_active">Active (hide without price)</string>
+    <string name="car_settings_price_filter_inactive">Inactive (show all)</string>
+    <string name="car_settings_max_age">Max Data Age</string>
+    <string name="car_settings_max_age_all">Show all</string>
+    <string name="car_settings_max_age_days">Max %1$d day(s) old</string>
+
+    <!-- Car App - Sub Settings Screens -->
+    <string name="car_select_current">✔  %1$s</string>
+    <string name="car_select_not_current">    %1$s</string>
+    <string name="car_select_radius_val">%1$d km</string>
+    <string name="car_current_selection">Currently selected</string>
+    <string name="car_current_radius">Current search radius</string>
+    <string name="car_current_setting">Current setting</string>
+    <string name="car_tap_to_select">Tap to select</string>
+    <string name="car_max_age_all">Show all (no filter)</string>
+
+    <!-- Car App - Station Detail Screen -->
+    <string name="car_detail_title">Gas Station</string>
+    <string name="car_detail_error">Error loading details.</string>
+    <string name="car_detail_no_address">No address available</string>
+    <string name="car_detail_fuel_prices">Fuel Prices</string>
+    <string name="car_detail_no_prices">No price information available</string>
+    <string name="car_detail_tcs_cashback">TCS Mastercard Cashback</string>
+    <string name="car_detail_tcs_yes">Yes - Discount available with TCS Mastercard</string>
+    <string name="car_detail_tcs_no">No</string>
+    <string name="car_detail_nav_start">Start Navigation</string>
 </resources>

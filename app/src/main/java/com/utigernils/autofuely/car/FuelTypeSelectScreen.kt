@@ -11,6 +11,7 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.utigernils.autofuely.R
 import com.utigernils.autofuely.data.model.FuelType
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 
@@ -42,11 +43,22 @@ class FuelTypeSelectScreen(carContext: CarContext) : Screen(carContext), Default
 
         FuelType.entries.forEach { fuelType ->
             val isSelected = fuelType == currentType
-            val titleText = if (isSelected) "✔  ${fuelType.displayName}" else "    ${fuelType.displayName}"
+            val displayName = carContext.getString(fuelType.displayNameResId)
+            val titleText = if (isSelected) {
+                carContext.getString(R.string.car_select_current, displayName)
+            } else {
+                carContext.getString(R.string.car_select_not_current, displayName)
+            }
+            
+            val subtitle = if (isSelected) {
+                carContext.getString(R.string.car_current_selection)
+            } else {
+                carContext.getString(R.string.car_tap_to_select)
+            }
 
             val row = Row.Builder()
                 .setTitle(titleText)
-                .addText(if (isSelected) "Aktuell ausgewählt" else "Antippen zum Auswählen")
+                .addText(subtitle)
                 .setOnClickListener {
                     preferenceRepository.setFuelType(fuelType)
                     screenManager.pop()
@@ -57,7 +69,7 @@ class FuelTypeSelectScreen(carContext: CarContext) : Screen(carContext), Default
         }
 
         val header = Header.Builder()
-            .setTitle("Kraftstoffart")
+            .setTitle(carContext.getString(R.string.car_settings_fuel_type))
             .setStartHeaderAction(Action.BACK)
             .build()
 
