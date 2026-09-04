@@ -92,7 +92,7 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
         autoRefreshJob = CoroutineScope(Dispatchers.Main).launch {
             loadData()
             while (isActive) {
-                delay(60_000) // Auto refresh every 60 seconds
+                delay(30_000) // Auto refresh every 60 seconds
                 loadData()
             }
         }
