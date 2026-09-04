@@ -8,6 +8,10 @@
     <string name="settings_accordion_appearance">Appearance</string>
     <string name="settings_accordion_permissions">Permissions</string>
     <string name="settings_accordion_about">About</string>
+    <string name="about_app_description">AutoFuely is an open-source Android Auto companion app that displays real-time gas station fuel prices across Switzerland directly on your car display.\n\nDeveloped by Nils Utiger. Fuel price data is provided by TCS (Touring Club Schweiz). To view fuel price maps directly on your smartphone, please use the official TCS map.</string>
+    <string name="btn_about_github">GitHub Repository</string>
+    <string name="btn_about_tcs_map">TCS Fuel Price Map</string>
+    <string name="btn_about_privacy_policy">Privacy Policy</string>
     <string name="theme_setting_title">App Theme</string>
     <string name="theme_setting_desc">Choose preferred appearance for the app</string>
     <string name="theme_option_system">System default</string>

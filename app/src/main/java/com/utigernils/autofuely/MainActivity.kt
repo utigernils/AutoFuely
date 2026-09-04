@@ -1,6 +1,5 @@
 package com.utigernils.autofuely
 
-import android.Manifest
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager

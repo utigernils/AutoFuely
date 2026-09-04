@@ -295,9 +295,43 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/settings_placeholder_text"
-                            android:textColor="@color/text_secondary"
+                            android:layout_marginBottom="16dp"
+                            android:lineSpacingExtra="3dp"
+                            android:text="@string/about_app_description"
+                            android:textColor="@color/text_body"
                             android:textSize="14sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAboutGithub"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/btn_about_github"
+                            android:textColor="@color/text_primary"
+                            app:strokeColor="@color/stroke_button_icon"
+                            app:cornerRadius="12dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAboutTcsMap"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:text="@string/btn_about_tcs_map"
+                            android:textColor="@color/text_primary"
+                            app:strokeColor="@color/stroke_button_icon"
+                            app:cornerRadius="12dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAboutPrivacyPolicy"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/btn_about_privacy_policy"
+                            android:textColor="@color/text_primary"
+                            app:strokeColor="@color/stroke_button_icon"
+                            app:cornerRadius="12dp" />
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

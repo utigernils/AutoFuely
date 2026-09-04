@@ -8,6 +8,10 @@
     <string name="settings_accordion_appearance">Aspetto</string>
     <string name="settings_accordion_permissions">Autorizzazioni</string>
     <string name="settings_accordion_about">Informazioni</string>
+    <string name="about_app_description">AutoFuely è un\'app open source per Android Auto che mostra i prezzi dei carburanti in tempo reale in Svizzera direttamente sul display dell\'auto.\n\nSviluppato da Nils Utiger. I dati sui prezzi provengono dall\'API TCS (Touring Club Svizzero). Per visualizzare la mappa dei prezzi direttamente sul tuo smartphone, utilizza la mappa ufficiale del TCS.</string>
+    <string name="btn_about_github">Repository GitHub</string>
+    <string name="btn_about_tcs_map">Mappa prezzi TCS</string>
+    <string name="btn_about_privacy_policy">Informativa sulla privacy</string>
     <string name="theme_setting_title">Tema dell\'app</string>
     <string name="theme_setting_desc">Scegli l\'aspetto preferito per l\'app</string>
     <string name="theme_option_system">Predefinito di sistema</string>

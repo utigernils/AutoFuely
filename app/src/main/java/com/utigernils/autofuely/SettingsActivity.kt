@@ -1,8 +1,10 @@
 package com.utigernils.autofuely
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.transition.TransitionManager
@@ -89,6 +91,7 @@ class SettingsActivity : AppCompatActivity() {
         setupAccordions()
         setupThemeSelection()
         setupPermissionsSection()
+        setupAboutSection()
 
         val tvFooter = findViewById<TextView>(R.id.tvFooterMadeBy)
         tvFooter.text = HtmlCompat.fromHtml(
@@ -109,6 +112,30 @@ class SettingsActivity : AppCompatActivity() {
             requestLocationPermissions()
         }
         updatePermissionUi(checkLocationPermission())
+    }
+
+    private fun setupAboutSection() {
+        val btnGithub = findViewById<MaterialButton>(R.id.btnAboutGithub)
+        val btnTcsMap = findViewById<MaterialButton>(R.id.btnAboutTcsMap)
+        val btnPrivacy = findViewById<MaterialButton>(R.id.btnAboutPrivacyPolicy)
+
+        btnGithub?.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
+            startActivity(intent)
+        }
+
+        btnTcsMap?.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://benzin.tcs.ch/de/map/"))
+            startActivity(intent)
+        }
+
+        btnPrivacy?.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
+            )
+            startActivity(intent)
+        }
     }
 
     private fun checkLocationPermission(): Boolean {
