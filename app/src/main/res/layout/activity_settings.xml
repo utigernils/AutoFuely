@@ -18,4 +18,39 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationIconTint="#FFFFFF" />
 
+    <ScrollView
+        android:id="@+id/settings_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/settings_content_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Spacer for future settings -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Footer -->
+            <TextView
+                android:id="@+id/tvFooterMadeBy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="#9E9E9E"
+                android:textColorLink="#29B6F6"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

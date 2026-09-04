@@ -5,6 +5,7 @@
     <string name="github">GitHub</string>
     <string name="action_app_settings">App Settings</string>
     <string name="title_app_settings">App Settings</string>
+    <string name="footer_made_by">Made with ❤️ by &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Privacy Policy</u></string>
 
     <!-- MainActivity Phone UI -->
