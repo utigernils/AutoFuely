@@ -3,6 +3,8 @@
     <string name="app_name">AutoFuely</string>
     <string name="app_subtitle">Android Auto Companion</string>
     <string name="github">GitHub</string>
+    <string name="action_app_settings">App-Einstellungen</string>
+    <string name="title_app_settings">App-Einstellungen</string>
     <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
 
     <!-- MainActivity Phone UI -->
