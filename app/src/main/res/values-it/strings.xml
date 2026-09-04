@@ -3,16 +3,44 @@
     <string name="app_name">AutoFuely</string>
     <string name="app_subtitle">Compagno Android Auto</string>
     <string name="github">GitHub</string>
+    <string name="action_app_settings">Impostazioni dell\'app</string>
+    <string name="title_app_settings">Impostazioni dell\'app</string>
+    <string name="settings_accordion_appearance">Aspetto</string>
+    <string name="settings_accordion_permissions">Autorizzazioni</string>
+    <string name="settings_accordion_about">Informazioni</string>
+    <string name="about_app_description">AutoFuely è un\'app open source per Android Auto che mostra i prezzi dei carburanti in tempo reale in Svizzera direttamente sul display dell\'auto.\n\nSviluppato da Nils Utiger. I dati sui prezzi provengono dall\'API TCS (Touring Club Svizzero). Per visualizzare la mappa dei prezzi direttamente sul tuo smartphone, utilizza la mappa ufficiale del TCS.</string>
+    <string name="btn_about_github">Repository GitHub</string>
+    <string name="btn_about_tcs_map">Mappa prezzi TCS</string>
+    <string name="btn_about_privacy_policy">Informativa sulla privacy</string>
+    <string name="version_format">Versione %1$s</string>
+    <string name="theme_setting_title">Tema dell\'app</string>
+    <string name="theme_setting_desc">Scegli l\'aspetto preferito per l\'app</string>
+    <string name="theme_option_system">Predefinito di sistema</string>
+    <string name="theme_option_dark">Scuro</string>
+    <string name="theme_option_light">Chiaro</string>
+    <string name="settings_placeholder_text">Contenuto segnaposto</string>
+    <string name="footer_made_by">Fatto con 🩶 da &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Informativa sulla privacy</u></string>
 
     <!-- MainActivity Phone UI -->
-    <string name="mobile_info_message">Questa applicazione è progettata specificamente per Android Auto. Per visualizzare i prezzi del carburante direttamente sul tuo smartphone, utilizza l\'app ufficiale Prezzi carburante TCS.</string>
+    <string name="status_active_title">Attivo</string>
+    <string name="status_active_desc">Tutti i sistemi sono operativi. AutoFuely è pronto per Android Auto.</string>
+    <string name="status_no_car_title">Android Auto non connesso</string>
+    <string name="status_no_car_desc">Connetti lo smartphone al veicolo tramite USB o wireless per usare AutoFuely sul display dell\'auto.</string>
+    <string name="status_no_permission_title">Autorizzazione posizione mancante</string>
+    <string name="status_no_permission_desc">L\'accesso alla posizione è richiesto. Concedi l\'autorizzazione nelle impostazioni dell\'app.</string>
+    <string name="status_error_title">Errore inaspettato</string>
+    <string name="status_error_desc">Si è verificato un errore durante l\'accesso ai servizi di posizione o dei prezzi del carburante.</string>
     <string name="settings_title">Impostazioni</string>
+    <string name="filter_settings_title">Impostazioni filtro</string>
     <string name="fuel_type_title">Carburante preferito</string>
-    <string name="bbox_size_title">Raggio di ricerca (area di ricerca)</string>
+    <string name="fuel_type_desc">Scegli il tipo di carburante da cercare nelle stazioni di servizio.</string>
+    <string name="bbox_size_title">Raggio di ricerca</string>
+    <string name="bbox_size_desc">Imposta il raggio di ricerca attorno alla tua posizione.</string>
     <string name="hide_no_price_title">Mostra solo stazioni con prezzo</string>
     <string name="hide_no_price_desc">Filtra le stazioni senza informazioni valide sul prezzo.</string>
     <string name="max_data_age_title">Età max. dei dati</string>
+    <string name="max_data_age_desc">Nascondi i prezzi più vecchi del numero di giorni specificato.</string>
 
     <!-- Permissions -->
     <string name="location_access_title">Accesso alla posizione</string>

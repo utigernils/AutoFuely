@@ -3,16 +3,44 @@
     <string name="app_name">AutoFuely</string>
     <string name="app_subtitle">Compagnon Android Auto</string>
     <string name="github">GitHub</string>
+    <string name="action_app_settings">Paramètres de l\'application</string>
+    <string name="title_app_settings">Paramètres de l\'application</string>
+    <string name="settings_accordion_appearance">Apparence</string>
+    <string name="settings_accordion_permissions">Autorisations</string>
+    <string name="settings_accordion_about">À propos</string>
+    <string name="about_app_description">AutoFuely est une application compagnon Android Auto open source qui affiche les prix des carburants en temps réel en Suisse directement sur l\'écran de votre voiture.\n\nDéveloppé par Nils Utiger. Les données proviennent de l\'API Prix du carburant du TCS (Touring Club Suisse). Pour consulter la carte des prix sur votre smartphone, veuillez utiliser la carte officielle du TCS.</string>
+    <string name="btn_about_github">Dépôt GitHub</string>
+    <string name="btn_about_tcs_map">Carte des prix TCS</string>
+    <string name="btn_about_privacy_policy">Politique de confidentialité</string>
+    <string name="version_format">Version %1$s</string>
+    <string name="theme_setting_title">Thème de l\'application</string>
+    <string name="theme_setting_desc">Choisissez l\'apparence préférée pour l\'application</string>
+    <string name="theme_option_system">Thème du système</string>
+    <string name="theme_option_dark">Sombre</string>
+    <string name="theme_option_light">Clair</string>
+    <string name="settings_placeholder_text">Contenu réservé</string>
+    <string name="footer_made_by">Fait avec 🩶 par &lt;a href="https://github.com/utigernils"&gt;utigernils&lt;/a&gt;</string>
     <string name="privacy_policy"><u>Politique de confidentialité</u></string>
 
     <!-- MainActivity Phone UI -->
-    <string name="mobile_info_message">Cette application est spécialement conçue pour Android Auto. Pour consulter les prix des carburants directement sur votre smartphone, veuillez utiliser l\'application officielle Prix du carburant TCS.</string>
+    <string name="status_active_title">Actif</string>
+    <string name="status_active_desc">Tous les systèmes sont opérationnels. AutoFuely est prêt pour Android Auto.</string>
+    <string name="status_no_car_title">Android Auto non connecté</string>
+    <string name="status_no_car_desc">Connectez votre smartphone à votre véhicule via USB ou sans fil pour utiliser AutoFuely sur l\'écran de votre voiture.</string>
+    <string name="status_no_permission_title">Autorisation de localisation manquante</string>
+    <string name="status_no_permission_desc">L\'accès à la localisation est requis. Veuillez accorder l\'autorisation dans les paramètres de l\'application.</string>
+    <string name="status_error_title">Erreur inattendue</string>
+    <string name="status_error_desc">Une erreur s\'est produite lors de l\'accès aux services de localisation ou de prix des carburants.</string>
     <string name="settings_title">Paramètres</string>
-    <string name="fuel_type_title">Carburant préféré</string>
-    <string name="bbox_size_title">Rayon de recherche (zone de recherche)</string>
-    <string name="hide_no_price_title">Afficher uniquement les stations avec prix</string>
-    <string name="hide_no_price_desc">Masque les stations sans information de prix valide.</string>
-    <string name="max_data_age_title">Âge max. des données</string>
+    <string name="filter_settings_title">Paramètres de filtrage</string>
+    <string name="fuel_type_title">Type de carburant préféré</string>
+    <string name="fuel_type_desc">Choisissez le type de carburant à rechercher dans les stations-service.</string>
+    <string name="bbox_size_title">Rayon de recherche</string>
+    <string name="bbox_size_desc">Définissez le rayon de recherche autour de votre position.</string>
+    <string name="hide_no_price_title">Uniquement les stations avec prix</string>
+    <string name="hide_no_price_desc">Masque les stations sans prix valide.</string>
+    <string name="max_data_age_title">Âge maximal des données</string>
+    <string name="max_data_age_desc">Masquez les prix plus anciens que le nombre de jours spécifié.</string>
 
     <!-- Permissions -->
     <string name="location_access_title">Accès à la localisation</string>

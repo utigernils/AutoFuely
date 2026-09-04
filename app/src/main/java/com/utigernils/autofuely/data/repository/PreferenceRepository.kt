@@ -15,6 +15,11 @@ class PreferenceRepository(context: Context) {
         const val KEY_BBOX_SIZE_KM = "key_bbox_size_km"
         const val KEY_HIDE_NO_PRICE_STATIONS = "key_hide_no_price_stations"
         const val KEY_MAX_PRICE_AGE_DAYS = "key_max_price_age_days"
+        const val KEY_THEME_MODE = "key_theme_mode"
+
+        const val THEME_SYSTEM = "system"
+        const val THEME_DARK = "dark"
+        const val THEME_LIGHT = "light"
     }
 
     fun registerOnChangeListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) {
@@ -69,5 +74,13 @@ class PreferenceRepository(context: Context) {
 
     fun setMaxPriceAgeDays(days: Int) {
         prefs.edit().putInt(KEY_MAX_PRICE_AGE_DAYS, days).apply()
+    }
+
+    fun getThemeMode(): String {
+        return prefs.getString(KEY_THEME_MODE, THEME_DARK) ?: THEME_DARK
+    }
+
+    fun setThemeMode(mode: String) {
+        prefs.edit().putString(KEY_THEME_MODE, mode).apply()
     }
 }

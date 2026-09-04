@@ -5,15 +5,18 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.car.app.connection.CarConnection
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.utigernils.autofuely.data.model.FuelType
 import com.utigernils.autofuely.data.repository.PreferenceRepository
 import com.utigernils.autofuely.databinding.ActivityMainBinding
@@ -22,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var preferenceRepository: PreferenceRepository
+    private var isCarConnected = false
 
     private val bboxSizeOptions = listOf(3, 5, 8, 10, 15, 20)
     private val maxAgeOptions = listOf(0, 1, 2, 3, 7)
@@ -35,52 +39,48 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val locationPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
-        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
-
-        if (fineGranted || coarseGranted) {
-            updatePermissionUi(true)
-            Toast.makeText(this, getString(R.string.permission_granted_toast), Toast.LENGTH_SHORT).show()
-        } else {
-            updatePermissionUi(false)
-            Toast.makeText(this, getString(R.string.permission_denied_toast), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            
+            // Apply top padding to header
+            val header = findViewById<View>(R.id.header_layout)
+            header?.setPadding(
+                header.paddingLeft,
+                systemBars.top + (20 * resources.displayMetrics.density).toInt(),
+                header.paddingRight,
+                header.paddingBottom
+            )
+            
+            // Apply bottom padding to scroll content
+            val content = findViewById<View>(R.id.content_layout)
+            content?.setPadding(
+                content.paddingLeft,
+                content.paddingTop,
+                content.paddingRight,
+                systemBars.bottom + (20 * resources.displayMetrics.density).toInt()
+            )
+            
+            insets
+        }
 
         preferenceRepository = PreferenceRepository(this)
 
-        val hasPermission = checkLocationPermission()
-        updatePermissionUi(hasPermission)
-
-        binding.btnGrantLocation.setOnClickListener {
-            requestLocationPermissions()
+        binding.btnSettings.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
 
-        binding.btnGithub.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
-            startActivity(intent)
-        }
-
-        binding.tvPrivacyPolicy.setOnClickListener {
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
-            )
-            startActivity(intent)
-        }
-
+        setupAccordions()
         setupFuelTypeSpinner()
         setupBboxSizeSpinner()
         setupHideNoPriceSwitch()
         setupMaxAgeSpinner()
+        setupCarConnectionObserver()
     }
 
     override fun onStart() {
@@ -89,9 +89,119 @@ class MainActivity : AppCompatActivity() {
         updateAllSettingsUi()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateAppStatus()
+    }
+
     override fun onStop() {
         super.onStop()
         preferenceRepository.unregisterOnChangeListener(prefChangeListener)
+    }
+
+    private fun setupCarConnectionObserver() {
+        try {
+            CarConnection(this).type.observe(this) { type ->
+                isCarConnected = type != CarConnection.CONNECTION_TYPE_NOT_CONNECTED
+                updateAppStatus()
+            }
+        } catch (_: Exception) {
+            updateAppStatus(hasUnexpectedError = true)
+        }
+    }
+
+    private fun checkLocationPermission(): Boolean {
+        val fine = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarse = ContextCompat.checkSelfPermission(
+            this, Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        return fine || coarse
+    }
+
+    private fun updateAppStatus(hasUnexpectedError: Boolean = false) {
+        val hasPermission = checkLocationPermission()
+
+        val (titleRes, descRes, colorHex) = when {
+            !hasPermission -> Triple(
+                R.string.status_no_permission_title,
+                R.string.status_no_permission_desc,
+                "#E53935"
+            )
+            hasUnexpectedError -> Triple(
+                R.string.status_error_title,
+                R.string.status_error_desc,
+                "#E53935"
+            )
+            !isCarConnected -> Triple(
+                R.string.status_no_car_title,
+                R.string.status_no_car_desc,
+                "#FF9800"
+            )
+            else -> Triple(
+                R.string.status_active_title,
+                R.string.status_active_desc,
+                "#4CAF50"
+            )
+        }
+
+        val color = Color.parseColor(colorHex)
+        binding.tvStatusTitle.text = getString(titleRes)
+        binding.tvStatusTitle.setTextColor(color)
+        binding.tvStatusDesc.text = getString(descRes)
+        binding.cardAppStatus.strokeColor = color
+    }
+
+    private fun setupAccordions() {
+        val contentLayout = binding.contentLayout
+
+        val headerFuelType = binding.headerFuelType
+        val contentFuelType = binding.contentFuelType
+        val arrowFuelType = binding.ivArrowFuelType
+
+        val headerBboxSize = binding.headerBboxSize
+        val contentBboxSize = binding.contentBboxSize
+        val arrowBboxSize = binding.ivArrowBboxSize
+
+        val headerHideNoPrice = binding.headerHideNoPrice
+        val contentHideNoPrice = binding.contentHideNoPrice
+        val arrowHideNoPrice = binding.ivArrowHideNoPrice
+
+        val headerMaxAge = binding.headerMaxAge
+        val contentMaxAge = binding.contentMaxAge
+        val arrowMaxAge = binding.ivArrowMaxAge
+
+        data class Accordion(val header: View, val content: View, val arrow: View)
+
+        val accordions = listOf(
+            Accordion(headerFuelType, contentFuelType, arrowFuelType),
+            Accordion(headerBboxSize, contentBboxSize, arrowBboxSize),
+            Accordion(headerHideNoPrice, contentHideNoPrice, arrowHideNoPrice),
+            Accordion(headerMaxAge, contentMaxAge, arrowMaxAge)
+        )
+
+        accordions.forEach { accordion ->
+            accordion.header.setOnClickListener {
+                TransitionManager.beginDelayedTransition(contentLayout)
+                val isCurrentlyExpanded = accordion.content.visibility == View.VISIBLE
+
+                accordions.forEach { other ->
+                    if (other == accordion) {
+                        if (isCurrentlyExpanded) {
+                            other.content.visibility = View.GONE
+                            other.arrow.animate().rotation(0f).setDuration(200).start()
+                        } else {
+                            other.content.visibility = View.VISIBLE
+                            other.arrow.animate().rotation(180f).setDuration(200).start()
+                        }
+                    } else {
+                        other.content.visibility = View.GONE
+                        other.arrow.animate().rotation(0f).setDuration(200).start()
+                    }
+                }
+            }
+        }
     }
 
     private fun updateAllSettingsUi() {
@@ -249,39 +359,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-    }
-
-    private fun checkLocationPermission(): Boolean {
-        val fine = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        val coarse = ContextCompat.checkSelfPermission(
-            this, Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-        return fine || coarse
-    }
-
-    private fun requestLocationPermissions() {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
-
-    private fun updatePermissionUi(hasPermission: Boolean) {
-        if (hasPermission) {
-            binding.btnGrantLocation.visibility = View.GONE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.permission_granted)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#66BB6A"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
-        } else {
-            binding.btnGrantLocation.visibility = View.VISIBLE
-            binding.tvLocationStatus.text = getString(com.utigernils.autofuely.R.string.location_permission_needed)
-            binding.tvLocationStatus.setTextColor(Color.parseColor("#FFA726"))
-            binding.tvLocationStatus.visibility = View.VISIBLE
         }
     }
 }
