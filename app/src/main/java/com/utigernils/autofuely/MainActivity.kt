@@ -2,7 +2,6 @@ package com.utigernils.autofuely
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -69,21 +68,8 @@ class MainActivity : AppCompatActivity() {
 
         preferenceRepository = PreferenceRepository(this)
 
-        binding.btnGithub.setOnClickListener {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/utigernils/AutoFuely"))
-            startActivity(intent)
-        }
-
         binding.btnSettings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
-        }
-
-        binding.tvPrivacyPolicy.setOnClickListener {
-            val intent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/utigernils/AutoFuely/blob/release/1.0-google-play/DATENSCHUTZERKLAERUNG.md")
-            )
-            startActivity(intent)
         }
 
         setupFuelTypeSpinner()
