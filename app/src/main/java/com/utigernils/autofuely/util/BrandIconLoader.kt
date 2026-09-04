@@ -18,7 +18,7 @@ class BrandIconLoader(private val context: Context) {
 
     val fallbackIcon: CarIcon by lazy {
         CarIcon.Builder(
-            IconCompat.createWithResource(context, R.drawable.ic_gas_station)
+            IconCompat.createWithResource(context, R.drawable.ic_gas_station),
         ).build()
     }
 
@@ -42,7 +42,7 @@ class BrandIconLoader(private val context: Context) {
                 val drawable = result.drawable
                 val originalBitmap: Bitmap = drawable.toBitmap(width = 128, height = 128)
                 val carIcon = CarIcon.Builder(
-                    IconCompat.createWithBitmap(originalBitmap)
+                    IconCompat.createWithBitmap(originalBitmap),
                 ).build()
                 iconCache[brandKey] = carIcon
                 return@withContext carIcon

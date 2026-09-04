@@ -155,9 +155,10 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 async {
                     val brand = station.brand
                     if (!brand.isNullOrEmpty()) {
-                        val icon = brandIconLoader.getBrandIcon(brand)
+                        val brandKey = brand.trim().lowercase()
+                        val icon = brandIconLoader.getBrandIcon(brandKey)
                         synchronized(icons) {
-                            icons[brand.lowercase()] = icon
+                            icons[brandKey] = icon
                         }
                     }
                 }
@@ -352,12 +353,15 @@ class MainMapScreen(carContext: CarContext) : Screen(carContext), DefaultLifecyc
                 }
 
                 val brandKey = station.brand?.trim()?.lowercase() ?: ""
-                val icon = brandIconsMap[brandKey] ?: brandIconLoader.fallbackIcon
+                val brandIcon = brandIconsMap[brandKey]
 
-                // Place marker for map: Use TYPE_IMAGE so Android Auto renders full-color brand logos
                 val carLocation = CarLocation.create(station.latitude, station.longitude)
                 val markerBuilder = PlaceMarker.Builder()
-                    .setIcon(icon, PlaceMarker.TYPE_IMAGE)
+                if (brandIcon != null) {
+                    markerBuilder.setIcon(brandIcon, PlaceMarker.TYPE_IMAGE)
+                } else {
+                    markerBuilder.setIcon(brandIconLoader.fallbackIcon, PlaceMarker.TYPE_ICON)
+                }
 
                 val place = Place.Builder(carLocation)
                     .setMarker(markerBuilder.build())
